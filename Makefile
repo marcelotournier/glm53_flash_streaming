@@ -105,3 +105,4 @@ check: unit ## Check Python syntax and Dockerfile availability
 test: check smoke restart-test ## Run local checks and real Docker integration tests
 
 include engines/exl3.mk
+include engines/maya.mk
