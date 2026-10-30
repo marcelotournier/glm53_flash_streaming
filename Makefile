@@ -25,6 +25,9 @@ STARTUP_TIMEOUT ?= 1800
 REQUEST_TIMEOUT ?= 1800
 EXPERIMENT ?= $(shell date -u +%Y%m%dT%H%M%SZ)
 GEN_TOKENS ?= 128
+ENGINE ?= exl3
+BENCH_CONTAINER ?= glm53-flash-$(ENGINE)
+PROMPT_REPEATS ?= 1600
 export CONTAINER HOST PORT API_KEY STARTUP_TIMEOUT REQUEST_TIMEOUT
 
 .PHONY: help download verify image start wait up stop restart recreate remove logs status smoke bench test restart-test unit check
@@ -103,6 +106,11 @@ check: unit ## Check Python syntax and Dockerfile availability
 	@test -s vendor/glm5next-moe-ssd-streaming.patch
 
 test: check smoke restart-test ## Run local checks and real Docker integration tests
+
+engine-bench: ## Natural-EOS OpenAI SSE benchmark for EXL3/Maya; record Git-linked prefill/gen metrics
+	CONTAINER=$(BENCH_CONTAINER) python3 scripts/wait.py
+	python3 scripts/engine_bench.py --id "$(EXPERIMENT)" --engine $(ENGINE) --container $(BENCH_CONTAINER) \
+	  --url http://$(HOST):$(PORT) --repeats $(PROMPT_REPEATS)
 
 include engines/exl3.mk
 include engines/maya.mk
