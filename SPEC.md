@@ -11,6 +11,8 @@
 - Prior experiments with larger models remain historical records only. Those runtimes are stopped and must not be restarted.
 - The 157 GB Unsloth IQ4_XS and 125 GB EXL3 candidates are **prohibited** under this requirement.
 - The exact user-linked **AJ-IQ2_XXS** candidate is **87,346,006,560 bytes** across two shards and is within the limit. Its pinned manifest is `aj.lock.json`.
+- Allowed Unsloth alternatives: **UD-IQ1_S =93,087,245,088 bytes** and **UD-IQ1_M =97,579,344,672 bytes** (pinned manifests `unsloth-iq1s.lock.json` / `unsloth-iq1m.lock.json`). Compatibility is assessed in ENGINES.md; neither is silently made the active model.
+- Unsloth **UD-IQ2_XXS =101,844,951,904 bytes is prohibited**, even if a UI labels it 94.85 GiB. Do not confuse GB with GiB.
 
 User imposed this restriction explicitly during implementation. Keep it in force across future sessions and experiments.
 

@@ -13,6 +13,25 @@ Post: https://x.com/ItsmeAjayKV/status/2111045102529593718 (2026-10-16). Retriev
 - Plan: reuse our working pinned Maya build, download+verify the exact AJ quant, build its own small compatibility pack, tune 16K/32K prefill batches and memory budget; target800–1000 but record only actual uncached measurements. Do not replace measured numbers with the post's claim.
 - Storage priority: stop/resume EXL3 checkpoint preparation as needed; its separate117GB expert store must not crowd out this exact requested reproduction. Existing partial downloads remain resumable; never exceed disk free-space reserves.
 
+## Unsloth alternatives below the hard limit
+
+Pinned repository revision `a38483c8cd5df544f53d70fb281afe97369d5ab6`, checked via the HF blob API (not rounded UI sizes):
+
+| Quant | Total shard bytes | Decimal GB | Allowed? |
+|---|---:|---:|---|
+| UD-IQ1_S | 93,087,245,088 | 93.087 | Yes; `unsloth-iq1s.lock.json` |
+| UD-IQ1_M | 97,579,344,672 | 97.579 | Yes; `unsloth-iq1m.lock.json` |
+| UD-IQ2_XXS | 101,844,951,904 | 101.845 | **No**, even though 94.85 GiB |
+
+Header-only range reads of both data shards, parsed with upstream Maya's own `gguf_reader`, verified the actual routed-tensor formats (including the unused MTP head):
+
+- IQ1_S: IQ3_XXS39, IQ2_XXS28, IQ1_S56, IQ4_XS3, Q3_K1, Q2_K2.
+- IQ1_M: IQ3_XXS39, IQ2_XXS42, IQ1_M42, IQ4_XS3, Q3_K1, Q2_K2.
+
+The pinned Maya build includes direct CUDA MMQ cases for IQ1_S, IQ2_XXS, IQ3_XXS, IQ4_XS, Q2_K and Q3_K. Its CPU native-expert tests explicitly cover the real UD-IQ1_S GLM geometry. **UD-IQ1_S is therefore the preferred Unsloth prefill candidate.** IQ1_M has decode support but no direct CUDA MMQ path in this build; those expert layers use a fallback, so a smaller bit label alone does not imply faster prefill.
+
+These are source/header compatibility checks, **not successful inference or speed measurements**. Full weight downloads must be hash-verified and pack/model smoke tests must pass before adopting either. Finish the exact user-linked AJ quant first; avoid concurrent downloads during benchmarks. Neither Unsloth candidate is silently substituted for AJ in the active configuration.
+
 ## Located the single-3090 0xSero recipe
 
 **[sybil-solutions/glm-flash-lite](https://github.com/sybil-solutions/glm-flash-lite)** (formerly `glm53-flash-offload`). This is the relevant GLM recipe, not the DGX Spark recipe found initially. Public Sybil code and `ghcr.io/0xsero` image lineage identify the connection. Source inspected at `6fe077da79a4d6fc842cf9f50cb703e4409924ca`.

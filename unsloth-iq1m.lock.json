@@ -1,0 +1,21 @@
+{
+  "repo": "unsloth/GLM-5.3-Flash-GGUF",
+  "revision": "a38483c8cd5df544f53d70fb281afe97369d5ab6",
+  "files": [
+    {
+      "path": "UD-IQ1_M/GLM-5.3-Flash-UD-IQ1_M-00001-of-00003.gguf",
+      "size": 9429984,
+      "sha256": "a3f31b5ba1ecc620a7c2088c30eb830c488453932f3e9e530777efb5980b0ef7"
+    },
+    {
+      "path": "UD-IQ1_M/GLM-5.3-Flash-UD-IQ1_M-00002-of-00003.gguf",
+      "size": 49996246592,
+      "sha256": "6bcfc2210cced11cede6cd6ce4ac3368c0b1ab52d6fc3e40f2a3f310f0614001"
+    },
+    {
+      "path": "UD-IQ1_M/GLM-5.3-Flash-UD-IQ1_M-00003-of-00003.gguf",
+      "size": 47573668096,
+      "sha256": "07e252723e988154340414ebd6857051179f69eb25112ad75122d4230ccfc6f7"
+    }
+  ]
+}

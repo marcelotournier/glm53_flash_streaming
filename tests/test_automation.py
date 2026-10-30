@@ -27,6 +27,8 @@ class AutomationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 download.validate_manifest(json.loads(Path(name).read_text()))
         self.assertEqual(download.validate_manifest(json.loads(Path('aj.lock.json').read_text())), 87_346_006_560)
+        self.assertEqual(download.validate_manifest(json.loads(Path('unsloth-iq1s.lock.json').read_text())), 93_087_245_088)
+        self.assertEqual(download.validate_manifest(json.loads(Path('unsloth-iq1m.lock.json').read_text())), 97_579_344_672)
 
     def test_patch_integrity(self):
         self.assertEqual(download.sha256(Path('vendor/glm5next-moe-ssd-streaming.patch')),
