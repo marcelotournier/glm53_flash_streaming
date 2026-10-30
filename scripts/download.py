@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resumable, hash-verified download of the pinned GGUF shards (stdlib + curl)."""
+"""Resumable, hash-verified download from a pinned HF manifest (stdlib + curl)."""
 import argparse
 import concurrent.futures
 import hashlib
@@ -42,10 +42,11 @@ def fetch(lock, item, dest, verify_only=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dest', type=Path, default=Path('models'))
+    parser.add_argument('--lock', type=Path, default=Path('model.lock.json'))
     parser.add_argument('--verify', action='store_true')
     parser.add_argument('--jobs', type=int, default=2)
     args = parser.parse_args()
-    lock = json.loads(Path('model.lock.json').read_text())
+    lock = json.loads(args.lock.read_text())
     args.dest.mkdir(parents=True, exist_ok=True)
     needed = 0
     for item in lock['files']:

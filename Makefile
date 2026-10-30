@@ -29,7 +29,7 @@ export CONTAINER HOST PORT API_KEY STARTUP_TIMEOUT REQUEST_TIMEOUT
 
 .PHONY: help download verify image start wait up stop restart recreate remove logs status smoke bench test restart-test unit check
 help: ## Show automation targets
-	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS=":.*?## "}; {printf "%-16s %s\n", $$1, $$2}'
+	@grep -h -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS=":.*?## "}; {printf "%-16s %s\n", $$1, $$2}'
 
 download: ## Resume download and SHA256-verify all five pinned IQ4_XS shards (~157 GB)
 	python3 scripts/download.py --dest "$(MODEL_DIR)" --jobs $(DOWNLOAD_JOBS)
@@ -103,3 +103,5 @@ check: unit ## Check Python syntax and Dockerfile availability
 	@test -s vendor/glm5next-moe-ssd-streaming.patch
 
 test: check smoke restart-test ## Run local checks and real Docker integration tests
+
+include engines/exl3.mk
