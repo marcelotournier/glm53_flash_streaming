@@ -30,6 +30,7 @@ def main():
     parser.add_argument('--prompt-style', choices=['repeated', 'repo'], default='repeated')
     parser.add_argument('--source-chars', type=int, default=100000)
     parser.add_argument('--prefill-only', action='store_true', help='Natural short factual answer; decode rate is not sustained')
+    parser.add_argument('--needle-test', action='store_true', help='Near-256K retrieval check; requires >=250000 prompt tokens')
     args = parser.parse_args()
     model_manifest = json.loads(args.model_lock.read_text())
     validate_manifest(model_manifest)
@@ -53,12 +54,22 @@ def main():
         background = (corpus * (args.source_chars // len(corpus) + 1))[:args.source_chars]
     else:
         background = 'alpha beta gamma delta. ' * args.repeats
-    prompt = (f'Independent benchmark {nonce}. Background notes to ignore:\n' + background +
+    needle = 'ORCHID-SILVER-7429' if args.needle_test else None
+    if needle:
+        at = len(background) // 3
+        background = (background[:at] + '\n[AUDIT RECORD]\nThe retrieval_code is ' + needle +
+                      '. Preserve it exactly for the final question.\n[END AUDIT RECORD]\n' + background[at:])
+        args.prefill_only = True
+    instruction = 'Read this document and retain its AUDIT RECORD.' if needle else 'Background notes to ignore:'
+    prompt = (f'Independent benchmark {nonce}. {instruction}\n' + background +
               '\nIgnore the background notes. Explain why the sky is blue in three paragraphs. '
               'Mention Rayleigh scattering and why sunsets look red. Answer directly without thinking aloud.')
     if args.prefill_only:
         prompt = prompt[:prompt.index('\nIgnore the background notes.')] + (
             '\nIgnore the background notes. What is the capital of France? Answer only with the city name.')
+    if needle:
+        prompt = prompt[:prompt.index('\nIgnore the background notes.')] + (
+            '\nWhat is the exact retrieval_code from the AUDIT RECORD? Return only that code, no other words.')
     payload = {'model': 'glm-5.3-flash', 'messages': [{'role': 'user', 'content': prompt}],
                'temperature': 0, 'seed': 42, 'stream': True,
                'stream_options': {'include_usage': True}, 'cache_prompt': False,
@@ -108,12 +119,13 @@ def main():
     prefill = prompt_n / (first - started) if first and prompt_n else None
     decode = (gen_n - 1) / (last - first) if first and last > first and gen_n > 1 else None
     cached = usage.get('prompt_tokens_details', {}).get('cached_tokens')
-    expected = 'paris' if args.prefill_only else 'rayleigh'
+    expected = needle.lower() if needle else ('paris' if args.prefill_only else 'rayleigh')
     passed = (error is None and done and finish == 'stop' and prompt_n > 256 and
               gen_n >= (1 if args.prefill_only else 32) and expected in text.lower() and final['State']['Running'] and
-              final['RestartCount'] == state['RestartCount'] and (cached is None or cached == 0))
+              final['RestartCount'] == state['RestartCount'] and (cached is None or cached == 0) and
+              (not args.needle_test or prompt_n >= 250000))
     receipt = {'id': args.id, 'engine': args.engine, 'prompt_style': args.prompt_style,
-        'prefill_only': args.prefill_only, 'configuration_commit': commit,
+        'prefill_only': args.prefill_only, 'needle_code': needle, 'configuration_commit': commit,
         'tested_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         'image_id': state['Image'], 'command': command, 'mounts': state['Mounts'],
         'container_started_at': state['State']['StartedAt'],
