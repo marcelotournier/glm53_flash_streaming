@@ -91,3 +91,11 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Prefill: 731.28 tok/s; generation: N/A tok/s.** Prompt=32058, generated=2, cached=0; wall=44.32s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=20.44GiB / 24GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 010-aj-32k-diagnostic — maya — 2026-10-30T21:02:03Z
+
+- Configuration commit: `d5401df12b9e3eba20234972f338da76675dfab1`; receipt: [results/experiment-010-aj-32k-diagnostic.json](results/experiment-010-aj-32k-diagnostic.json).
+- **Prefill: 728.21 tok/s; generation: N/A tok/s.** Prompt=32058, generated=2, cached=0; wall=44.50s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=17.93GiB / 24GiB.
+- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+- Native diagnostic proved the 32K allocation fits, but the API driver's default **periodic checkpoint every16K** split the prompt into two calls:16384tokens/21.73s +15673tokens/21.57s, each streaming experts again. Next test uses documented `MAYA_GLM_CKPT_EVERY=0` to remove that extra sweep; whole-turn snapshots remain. No new kernels or weight modifications.
