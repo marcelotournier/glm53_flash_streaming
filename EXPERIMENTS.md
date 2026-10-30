@@ -84,3 +84,10 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Prefill: 727.09 tok/s; generation: N/A tok/s.** Prompt=16058, generated=2, cached=0; wall=22.57s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=17.85GiB / 24GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 009-aj-32k-prefill — maya — 2026-10-30T20:57:32Z
+
+- Configuration commit: `84b681fe941052d0ec621cfa157be801fb31643d`; receipt: [results/experiment-009-aj-32k-prefill.json](results/experiment-009-aj-32k-prefill.json).
+- **Prefill: 731.28 tok/s; generation: N/A tok/s.** Prompt=32058, generated=2, cached=0; wall=44.32s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=20.44GiB / 24GiB.
+- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
