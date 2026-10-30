@@ -15,7 +15,7 @@ CTX ?= 8192
 EXPERT_CACHE ?= 24s
 # Layer indices include 3 dense layers; 45 streams all 42 routed MoE layers.
 CPU_MOE ?= 45
-BATCH ?= 256
+BATCH ?= 512
 THREADS ?= 8
 IO_THREADS ?= 8
 MEMORY ?= 24g
