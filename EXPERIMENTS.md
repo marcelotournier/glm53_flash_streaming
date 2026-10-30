@@ -41,3 +41,10 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Settings: CPU_MOE=45, cache=24s, batch/ubatch=256, context=8192.
 - **Prefill: 4.12 tok/s; generation: 1.34 tok/s.** New prompt=460, cached=0, generated=128; wall=206.34s; disk read=537.62 GB.
 - RAM=21.32GiB / 24GiB; GPU used/total=11170, 24576 MiB; outcome=PASS.
+
+### 004-batch512 — 2026-10-30T19:51:17Z
+
+- Configuration commit: `b1f45d35c629d6fba679ecc0ed056d316462f6b5`; receipt: [results/experiment-004-batch512.json](results/experiment-004-batch512.json).
+- Settings: CPU_MOE=45, cache=24s, batch/ubatch=512, context=8192.
+- **Prefill: 7.43 tok/s; generation: 1.34 tok/s.** New prompt=460, cached=0, generated=128; wall=156.95s; disk read=406.16 GB.
+- RAM=21.2GiB / 24GiB; GPU used/total=11300, 24576 MiB; outcome=PASS.
