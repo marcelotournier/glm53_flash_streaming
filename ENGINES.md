@@ -1,6 +1,6 @@
 # Engine investigation (2026-10-30)
 
-**Latest hard constraint: no quant above 100,000,000,000 bytes total weights (SPEC.md).** The125GB EXL3 and157GB IQ4 entries below are historical investigation only; downloads/inference stopped and startup/packing are now blocked by size guards. Only87.35GB AJ-IQ2_XXS is an allowed active candidate.
+**Latest hard constraint: no quant above 100,000,000,000 bytes total weights (SPEC.md).** The125GB EXL3 and157GB IQ4 entries below are historical investigation only; downloads/inference stopped and startup/packing are now blocked by size guards. The active deployment is 87.35 GB AJ-IQ2_XXS; eligible Unsloth alternatives are assessed separately below.
 
 ## Exact user-linked AJ / Maya recipe (confirmed from the post)
 
@@ -10,8 +10,8 @@ Post: https://x.com/ItsmeAjayKV/status/2111045102529593718 (2026-10-16). Retriev
 - Its dense/attention/shared weights are Q6_K, sensitive gates/indexer Q8_0, routers/norms F32, routed gate/up IQ2_XXS and down IQ2_XXS with higher precision on edge layers. All routed experts retained; unused MTP block removed by the quantizer.
 - Screenshot: 863 tok/s prefill, 20.5 tok/s displayed decode, 7.7K/256K request context, 12.8 GB VRAM expert residency and **46.7 GB pinned RAM**, 48.3% VRAM hit rate; PCIe Gen4 x16, 12-core/24-thread CPU. Different memory residency than this host's ~12 GiB RAM tier and PCIe Gen3.
 - Quality tradeoff is real: model card reports AJ-IQ2_XXS WikiText PPL 4.2314 vs BF16 2.2474 and KLD0.7072 (their 30-chunk experiment, not ours). Do not silently call it the same-quality model as IQ4_XS.
-- Plan: reuse our working pinned Maya build, download+verify the exact AJ quant, build its own small compatibility pack, tune 16K/32K prefill batches and memory budget; target800–1000 but record only actual uncached measurements. Do not replace measured numbers with the post's claim.
-- Storage priority: stop/resume EXL3 checkpoint preparation as needed; its separate117GB expert store must not crowd out this exact requested reproduction. Existing partial downloads remain resumable; never exceed disk free-space reserves.
+- **Implemented and tested locally:** pinned Maya + hash-verified AJ, small BF16 compatibility pack, 32K prefill, 12 GiB RAM tier, 256K context. Disabling periodic16K checkpoint cuts (`MAYA_GLM_CKPT_EVERY=0`) was crucial. Repository-code/docs prefill **961.76 tok/s**, natural375-token decode **4.78 tok/s**; near-256K exact retrieval **968.03 tok/s**. Details/configuration commits: [EXPERIMENTS.md](EXPERIMENTS.md).
+- EXL3 preparation/downloads are stopped and prohibited under the cap, not resumable candidates for current work. Preserve free disk space; no concurrent downloads/builds during benchmarks.
 
 ## Unsloth alternatives below the hard limit
 
@@ -30,7 +30,7 @@ Header-only range reads of both data shards, parsed with upstream Maya's own `gg
 
 The pinned Maya build includes direct CUDA MMQ cases for IQ1_S, IQ2_XXS, IQ3_XXS, IQ4_XS, Q2_K and Q3_K. Its CPU native-expert tests explicitly cover the real UD-IQ1_S GLM geometry. **UD-IQ1_S is therefore the preferred Unsloth prefill candidate.** IQ1_M has decode support but no direct CUDA MMQ path in this build; those expert layers use a fallback, so a smaller bit label alone does not imply faster prefill.
 
-These are source/header compatibility checks, **not successful inference or speed measurements**. Full weight downloads must be hash-verified and pack/model smoke tests must pass before adopting either. Finish the exact user-linked AJ quant first; avoid concurrent downloads during benchmarks. Neither Unsloth candidate is silently substituted for AJ in the active configuration.
+These are source/header compatibility checks, **not successful inference or speed measurements**. Full weight downloads must be hash-verified and pack/model smoke tests must pass before adopting either. AJ is now deployed and tested; either Unsloth variant would require a separate future experiment, without concurrent downloads during benchmarks. Neither Unsloth candidate is silently substituted for AJ in the active configuration.
 
 ## Located the single-3090 0xSero recipe
 
@@ -48,28 +48,29 @@ Exact published NVMe image: `ghcr.io/sybil-solutions/glm53-flash-offload@sha256:
 
 Published reference (not our measurements): 16 GiB cap, single RTX 3090, ~650 tok/s at 8K; ~1010 tok/s over a 93K prompt. **Reference host has EPYC 24 cores, eight RAM channels, PCIe 4 x16 and four Samsung 9100 PRO drives in RAID0 (~26 GB/s).** Our single PCIe 3 NVMe (~2.7 GB/s measured), 8-core two-channel host cannot inherit those numbers.
 
-### Adaptation here
+### Historical adaptation plan — prohibited weights, do not run
 
-Reuse the published image unchanged; no new inference kernels. `engines/exl3.mk` automates pull/download/O_DIRECT probe/store packing+verification/start/wait/stop. 24 GiB no-swap cap, upstream small-host budget explicitly enabled, 1 GiB recurrent-state cache, 128 prefill-ring slots, CPU lane cores 2–7, feeder 0/controller 1/readers 8–15, 16 I/O threads. CDI + SELinux bind-mount settings match this rootless Docker host. No unlimited-memlock request (not permitted here; CUDA registration itself previously worked).
+The following records the earlier plan only; main Makefile no longer includes these targets and weight-use guards reject the125GB manifest. No active EXL3 deployment exists. The plan reused the published image unchanged, with no new inference kernels. `engines/exl3.mk` automates pull/download/O_DIRECT probe/store packing+verification/start/wait/stop. 24 GiB no-swap cap, upstream small-host budget explicitly enabled, 1 GiB recurrent-state cache, 128 prefill-ring slots, CPU lane cores 2–7, feeder 0/controller 1/readers 8–15, 16 I/O threads. CDI + SELinux bind-mount settings match this rootless Docker host. No unlimited-memlock request (not permitted here; CUDA registration itself previously worked).
 
 This host uses Btrfs, not upstream's recommended xfs/ext4. Its actual aligned O_DIRECT write/read probe passed on the store directory. The image's own probe and full packed-record verification must also pass before serving; **no filesystem repartitioning or loop devices**.
 
-Preparation requires ~125.3 GB checkpoint +117.3 GB store plus image space; checked ~359 GiB free before starting. Keep the working GGUF engine as a fallback. Never run competing inference engines on the GPU during timing.
+Preparation requires ~125.3 GB checkpoint +117.3 GB store plus image space; checked ~359 GiB free before starting. The oversized GGUF model is NOT an allowed fallback. Never run competing inference engines on the GPU during timing.
 
-## Other engines worth testing
+## Other engines investigated
 
 | Engine | Assessment / test plan |
 |---|---|
-| Current pinned llama.cpp streaming patch | Working and smoke-tested. Best recorded small-prompt result 7.80 prefill /1.41 gen tok/s at 460 prompt tokens; not an 8K-prefill comparison. Keep as exact GGUF baseline/fallback. |
-| **Project Maya** (`mw00/project-maya`, Strata-derived) | High-value candidate: Linux-native, current GLM support, elastic expert tiers, large tensor-core prefill, 32 GB-class hosts. Can reuse existing GGUF or new EXL3, avoiding another weight download. Testing pinned source `cd48762b6d4888205c130238dbc0c7f7904993cf`, upstream ggml `3cf03257f219afbe7334045ff7c6a06ac68c627d` in `engines/maya.Dockerfile`; sm_86, portable AVX2, existing GGUF with upstream's required BF16-compatible small-tensor pack. Explicit 12 GiB RAM tier, auto elastic prefill, no MTP, no skipping/LoRA/pruning. `engines/maya.mk` automates build/pack/start/wait. |
-| `isichan-ai/Strata-GLM` | Reuses our exact Unsloth IQ4_XS; reported ~580 tok/s on 5090+128 GB. GLM path Linux explicitly untested, Windows-first packaging; less attractive than its actively maintained Maya lineage. Pin `6feb85fed9f994380b201c105851a740ec99d5e8` if tested. Disable expert skipping for fair quality. |
+| Current pinned llama.cpp streaming patch | Historical smoke-tested engine: 7.80 prefill /1.41 gen tok/s at460 prompt tokens, NOT an8K comparison. Its157GB test quant is prohibited, not a current baseline/fallback. |
+| **Project Maya** (`mw00/project-maya`, Strata-derived) | **Chosen and deployed with allowed87GB AJ:** Linux-native GLM, elastic expert tiers, tensor-core prefill, 32GB-class hosts. Pinned source `cd48762b6d4888205c130238dbc0c7f7904993cf`, upstream ggml `3cf03257f219afbe7334045ff7c6a06ac68c627d` in `engines/maya.Dockerfile`; sm_86, portable AVX2, AJ GGUF with upstream's required BF16-compatible small-tensor pack. Explicit 12 GiB RAM tier, auto elastic prefill, no MTP, no skipping/LoRA/pruning. `engines/maya.mk` automates build/pack/start/wait. |
+| `isichan-ai/Strata-GLM` | Historical investigation using oversized IQ4_XS (prohibited here); reported ~580 tok/s on 5090+128 GB. GLM path Linux explicitly untested, Windows-first packaging; less attractive than its actively maintained Maya lineage. Pin `6feb85fed9f994380b201c105851a740ec99d5e8` if tested. Disable expert skipping for fair quality. |
 | `Indras-Mirror/Strata-GLM` | Linux support, but current defaults require ~80 GB free RAM, Maya-S-v2 weights and runtime abliteration/soft pruning. Do not adopt its defaults on this 27 GiB host or silently change model behavior. |
-| `sergqwer/strata-glm` | Archived NVFP4 experiment (pin `ed37419fccd0c52e07d26d526a29c2098f547843`), 5090/128 GB/two NVMe, separate ~204 GB checkpoint. Poor first candidate here. |
+| `sergqwer/strata-glm` | Archived NVFP4 experiment (pin `ed37419fccd0c52e07d26d526a29c2098f547843`), 5090/128 GB/two NVMe, separate ~204 GB checkpoint. Prohibited by current size cap. |
 | Current upstream `Niko1221/Strata` | Current README lists Qwen/DeepSeek, not GLM. Do not assume a Qwen engine can load GLM unchanged. Prefer a GLM-specific maintained fork/Maya. |
 
 ### Preparation checks
 
 - Maya CUDA sm_86 build succeeded (152 compilation units). Initial pack attempt at configuration `d924430` stopped safely before serving: upstream's `_paths.py` requires `STRATA_GGUF_PY` explicitly even when the module imports via PYTHONPATH. Added that environment variable to the image; no inference happened, prefill/gen metrics N/A.
-- EXL3 image pull and hash-verified checkpoint download run in parallel; disk/RAM monitored. Existing llama server explicitly stopped during engine transition, not crashed. No repartitioning or changes to the user's other workloads.
+- Earlier EXL3 preparation was stopped on imposition of the100GB cap; no download/build jobs remain. The oversized llama container was stopped then removed; its cached weights/images are unused. No repartitioning or changes to the user's other workloads.
+- Active AJ passed real auth/chat/SSE/multi-turn/disk-read smoke, near-256K buried-code retrieval, Docker API-crash recovery and explicit stop/start semantics. A final smoke also passed immediately after the255K-token request.
 
 Results, failures, limits, configuration Git hashes and local prefill/gen rates go in `EXPERIMENTS.md`; remote claims above are only investigation context. A different quantization/runtime requires new correctness checks, not just a speed comparison.

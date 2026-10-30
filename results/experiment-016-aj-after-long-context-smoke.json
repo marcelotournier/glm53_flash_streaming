@@ -1,0 +1,193 @@
+{
+  "configuration_commit": "263485795db54577a1a022b1f2c1e8379eca3fd0",
+  "tested_at": "2026-10-30T22:53:27Z",
+  "image_id": "sha256:af26ebe63f5296347660dd6091655235c74279fac8ab8fca1fd690fc488b950d",
+  "model_manifest": {
+    "repo": "aj9o9/GLM-5.3-Flash-GGUF",
+    "revision": "07c62fcdeaf1c05d22bd123c3da8058a1b1e63e2",
+    "files": [
+      {
+        "path": "AJ-IQ2_XXS/GLM-5.3-Flash-AJ-IQ2_XXS-00001-of-00002.gguf",
+        "size": 44665098240,
+        "sha256": "1fa0535ecddaee4ff127eb8ffd47d3855ca7efa1cc29c996c24da699c5fbe3f7"
+      },
+      {
+        "path": "AJ-IQ2_XXS/GLM-5.3-Flash-AJ-IQ2_XXS-00002-of-00002.gguf",
+        "size": 42680908320,
+        "sha256": "ab8abbde061254a7f6b1a16b3627c4b77e3084f52e3d9739ebaa515b9365945c"
+      }
+    ]
+  },
+  "models": {
+    "object": "list",
+    "data": [
+      {
+        "id": "glm-5.3-flash",
+        "object": "model",
+        "status": {
+          "value": "loaded"
+        },
+        "meta": {
+          "n_ctx": 262144
+        },
+        "context_length": 262144,
+        "architecture": {
+          "input_modalities": [
+            "text"
+          ],
+          "output_modalities": [
+            "text"
+          ]
+        }
+      }
+    ]
+  },
+  "chat": {
+    "id": "chatcmpl-d6c091a551504bc198983300",
+    "object": "chat.completion",
+    "created": 1793400797,
+    "model": "glm-5.3-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Paris"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 2,
+      "total_tokens": 29,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 27,
+      "prompt_ms": 5378.2,
+      "prompt_per_token_ms": 199.193,
+      "prompt_per_second": 5.0,
+      "predicted_n": 2,
+      "predicted_ms": 261.0,
+      "predicted_per_token_ms": 130.5,
+      "predicted_per_second": 7.7,
+      "draft_n": 0,
+      "draft_n_accepted": 0
+    }
+  },
+  "stream": {
+    "content": "Paris",
+    "reasoning": "",
+    "chunks": 3,
+    "done": true,
+    "timings": {
+      "cache_n": 26,
+      "prompt_n": 1,
+      "prompt_ms": 64.9,
+      "prompt_per_token_ms": 64.9,
+      "prompt_per_second": 15.4,
+      "predicted_n": 2,
+      "predicted_ms": 71.8,
+      "predicted_per_token_ms": 35.9,
+      "predicted_per_second": 27.9,
+      "draft_n": 0,
+      "draft_n_accepted": 0
+    }
+  },
+  "multi_turn": {
+    "id": "chatcmpl-1f27f386eda24ab48852d164",
+    "object": "chat.completion",
+    "created": 1793400802,
+    "model": "glm-5.3-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Tokyo"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 46,
+      "completion_tokens": 3,
+      "total_tokens": 49,
+      "prompt_tokens_details": {
+        "cached_tokens": 26
+      }
+    },
+    "timings": {
+      "cache_n": 26,
+      "prompt_n": 20,
+      "prompt_ms": 3661.7,
+      "prompt_per_token_ms": 183.085,
+      "prompt_per_second": 5.5,
+      "predicted_n": 3,
+      "predicted_ms": 487.6,
+      "predicted_per_token_ms": 162.533,
+      "predicted_per_second": 6.2,
+      "draft_n": 0,
+      "draft_n_accepted": 0
+    }
+  },
+  "disk_read_bytes": 26932572160,
+  "phases": [
+    {
+      "name": "factual chat",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 27,
+        "prompt_ms": 5378.2,
+        "prompt_per_token_ms": 199.193,
+        "prompt_per_second": 5.0,
+        "predicted_n": 2,
+        "predicted_ms": 261.0,
+        "predicted_per_token_ms": 130.5,
+        "predicted_per_second": 7.7,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      },
+      "wall_s": 5.665389153000433
+    },
+    {
+      "name": "SSE repeat (warm)",
+      "timings": {
+        "cache_n": 26,
+        "prompt_n": 1,
+        "prompt_ms": 64.9,
+        "prompt_per_token_ms": 64.9,
+        "prompt_per_second": 15.4,
+        "predicted_n": 2,
+        "predicted_ms": 71.8,
+        "predicted_per_token_ms": 35.9,
+        "predicted_per_second": 27.9,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      },
+      "wall_s": 0.14038481399984448
+    },
+    {
+      "name": "multi-turn state",
+      "timings": {
+        "cache_n": 26,
+        "prompt_n": 20,
+        "prompt_ms": 3661.7,
+        "prompt_per_token_ms": 183.085,
+        "prompt_per_second": 5.5,
+        "predicted_n": 3,
+        "predicted_ms": 487.6,
+        "predicted_per_token_ms": 162.533,
+        "predicted_per_second": 6.2,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      },
+      "wall_s": 4.1539221050006745
+    }
+  ],
+  "passed": true
+}

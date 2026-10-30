@@ -21,7 +21,7 @@ make stop               # stays stopped, including across reboots
 make start wait         # reuse the allowed model/container
 ```
 
-The server uses **`--restart unless-stopped`**. Docker restarts crashes and resumes it after daemon/host restarts unless manually stopped. Rootless Docker itself must be enabled at boot; the user service and linger are already enabled here. A Docker unhealthy status alone does not restart a live process.
+The server uses **`--restart unless-stopped`**. Docker restarts crashes and resumes it after daemon/host restarts unless manually stopped. Rootless Docker itself must be enabled at boot; the user service and linger are already enabled here. A Docker unhealthy status alone does not restart a live process. Real auth/chat/SSE/multi-turn, API-crash recovery and manual stop/start tests passed; a second smoke passed after the near-256K request.
 
 API: **http://127.0.0.1:8000/v1** · model **`glm-5.3-flash`** · default key **`local`**. Loopback binding is intentional. Use a private key and authenticated TLS proxy before exposing it remotely.
 
@@ -35,7 +35,7 @@ Unlike the earlier llama.cpp template, Maya explicitly supports `enable_thinking
 
 ## Measured on this host
 
-All rows below use the **87.35 GB AJ quant**, cached prompt tokens=0, and configured context262,144. Rates are local measurements, not borrowed from the post.
+All rows below use the **87.35 GB AJ quant**, cached prompt tokens=0, and configured context 262,144. Rates are local measurements, not borrowed from the post.
 
 | Experiment | Prompt / output tokens | Uncached prefill | Generation |
 |---|---:|---:|---:|
@@ -45,9 +45,9 @@ All rows below use the **87.35 GB AJ quant**, cached prompt tokens=0, and config
 | 012: repository docs/code, natural full answer | 25,558 /375 | **961.76 tok/s** | **4.78 tok/s** |
 | 015: near-256K buried-code retrieval | 255,099 /11 | **968.03 tok/s** | N/A: short retrieval |
 
-Experiment015 recovered the exact audit code buried roughly one-third into the document, with zero reused prompt tokens and container memory peak18.40GiB. This is one synthetic retrieval check, not a broad long-context quality evaluation.
+Experiment 015 recovered the exact audit code buried roughly one-third into the document, with zero reused prompt tokens and container memory peak 18.40 GiB. This is one synthetic retrieval check, not a broad long-context quality evaluation.
 
-The crucial upstream setting is **`MAYA_GLM_CKPT_EVERY=0`**. Otherwise the API driver cuts a 32K prompt into two16K calls and streams the experts twice. Whole-turn snapshots remain, but partial-prompt resume checkpoints are disabled. No expert skipping/pruning or KV-prefix reuse was used for these numbers. The 64 GB reference's20–25tok/s decode is **not** reproduced on this lower-memory host.
+The crucial upstream setting is **`MAYA_GLM_CKPT_EVERY=0`**. Otherwise the API driver cuts a 32K prompt into two 16K calls and streams the experts twice. Whole-turn snapshots remain, but partial-prompt resume checkpoints are disabled. No expert skipping/pruning or KV-prefix reuse was used for these numbers. The 64 GB reference's 20–25 tok/s decode is **not** reproduced on this lower-memory host.
 
 See linked JSON receipts and exact configuration Git hashes in [EXPERIMENTS.md](EXPERIMENTS.md). Different prompt sizes/styles are not matched speedup ratios.
 
@@ -58,13 +58,13 @@ See linked JSON receipts and exact configuration Git hashes in [EXPERIMENTS.md](
 - `make pack`: build upstream's required small BF16-compatible tensors and tokenizer. It does **not** duplicate/requantize all experts. A manifest marker makes this idempotent; `make maya-pack-force` refuses to rewrite a running server's pack.
 - `make smoke EXPERIMENT=<unique-id>`: real model, authentication rejection, factual chat, SSE framing, multi-turn state and actual disk-read counters.
 - `make restart-test EXPERIMENT=<unique-id>`: kill the API process, verify Docker recovery, verify explicit stop stays stopped, then start again.
-- `make bench EXPERIMENT=<unique-id>`: long unique prompt and natural-end answer; records uncached prefill (prompt tokens / TTFT) and generation separately. `PROMPT_STYLE=repo SOURCE_CHARS=100000` measures repository-code/document context with a full natural answer. `PROMPT_REPEATS=6400 PREFILL_ONLY=1` is a ~32K-token prefill probe with a naturally short factual answer; its decode rate is **not sustained throughput**.
+- `make bench EXPERIMENT=<unique-id>`: long unique prompt and natural-end answer; records uncached prefill (prompt tokens / TTFT) and generation separately. `PROMPT_STYLE=repo SOURCE_CHARS=100000` measures repository-code/document context with a full natural answer. `PROMPT_REPEATS=6400 PREFILL_ONLY=1` is a ~32K-token prefill probe with a naturally short factual answer; its decode rate is **not sustained throughput**. `NEEDLE_TEST=1 PROMPT_REPEATS=51000` runs the near-256K buried-code retrieval check.
 
 **Commit and push settings before experiments.** The benchmark records the configuration Git hash, exact quant manifest, image ID, mounts, settings, token counts, cache policy, response, timings and outcome. Commit/push the JSON receipt and Markdown report after each run. Keep tests isolated from downloads/builds and other GPU workloads.
 
 Reports: **[EXPERIMENTS.md](EXPERIMENTS.md)** · recipe/engine research: **[ENGINES.md](ENGINES.md)** · live operations memory: **[AGENTS.md](AGENTS.md)**.
 
-The target is **800–1000 tok/s uncached prefill**, not cached-prefix throughput. Only local measured results count. The reference post used a smaller quant and 46.7 GB pinned expert RAM; this host has less memory and a PCIe 3 NVMe/CPU platform. Results from different prompt sizes, quants, cache states or measurement methods are not direct speedup comparisons.
+The **800–1000 tok/s uncached prefill target is demonstrated** on the measured workloads above, not cached-prefix throughput. The reference post used the **same AJ quant** but 46.7 GB pinned expert RAM; this host has less memory and a PCIe 3 NVMe/CPU platform. Results from different prompt sizes, quants, cache states or measurement methods are not direct speedup comparisons.
 
 ## Reused work
 

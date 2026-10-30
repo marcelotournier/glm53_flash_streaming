@@ -150,3 +150,12 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Exact `ORCHID-SILVER-7429` retrieved from the sole audit record roughly one-third into the document (~85K tokens). This verifies retrieval well beyond the32K GPU-resident DSA window, not just a large configured API limit. One synthetic needle, not a general long-context quality claim. Native prefill968.6tok/s; peak memory19,757,936,640bytes (~18.40GiB) below24GiB cap. The11-token generation rate is NOT sustained.
 - Outcome=PASS; finish=stop; error=None; RAM=17.85GiB / 24GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 016-aj-after-long-context-smoke — AJ Maya functional checks
+
+- Config `263485795db54577a1a022b1f2c1e8379eca3fd0`; receipt [results/experiment-016-aj-after-long-context-smoke.json](results/experiment-016-aj-after-long-context-smoke.json).
+- factual chat: prefill=5.0 tok/s; gen=7.7 tok/s; wall=5.67s (short factual answer, NOT sustained speed).
+- SSE repeat (warm): prefill=15.4 tok/s; gen=27.9 tok/s; wall=0.14s (short factual answer, NOT sustained speed).
+- multi-turn state: prefill=5.5 tok/s; gen=6.2 tok/s; wall=4.15s (short factual answer, NOT sustained speed).
+- PASS: auth rejection, model ID, chat, SSE, multi-turn and 26.93 GB real disk reads.
+- Run immediately after the255K retrieval, without restart: new-conversation state reset works. Final SHA256 verification passed for both AJ shards; `make pack start wait` reused the existing pack/container idempotently; seven unit checks passed again. Server left running/healthy, no OOM,24GiB cap/no swap, `unless-stopped`. Removed only our obsolete stopped oversized llama container to prevent accidental startup; other user containers and cached weights/images untouched.

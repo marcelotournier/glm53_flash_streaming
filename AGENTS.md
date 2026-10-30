@@ -23,7 +23,7 @@ Implement a local GLM-5.3-Flash Docker server using established NVMe expert-stre
 - RTX3090 24 GiB, PCIe3 x16; NVIDIA driver615.71.09. Single Samsung970 EVO Plus1TB NVMe, Btrfs, actual O_DIRECT probe passed. No formatting/RAID/mount changes.
 - Rootless Docker29.8.1, context rootless, NVIDIA CDI `--device nvidia.com/gpu=all`; bind mounts need `--security-opt label=disable`. No Compose.
 - User Docker service + login linger already enabled. No sudo used. Unlimited memlock flag is rejected by rootless hard limit; CUDA host registration works without it.
-- Do not touch user's other containers/images/workloads (e.g. existing Qwen setup). Old oversized `glm53-flash` container is ours and stopped; safe to remove only this obsolete container if desired. Do not blindly prune Docker or delete cached weights.
+- Do not touch user's other containers/images/workloads (e.g. existing Qwen setup). Removed ONLY our obsolete stopped oversized `glm53-flash` container to prevent accidental startup. Historical oversized weights/images remain unused; do not blindly prune Docker or delete cached weights.
 
 ## Measurements / validation
 All exact configuration commit hashes, recipes, token counts, cache states and receipts are in **EXPERIMENTS.md** and `results/experiment-*.json`. Main findings:
@@ -35,7 +35,7 @@ All exact configuration commit hashes, recipes, token counts, cache states and r
 - 013:auth/chat/SSE/multiturn/disk reads passed. Initial lifecycle harness accidentally killed Python NVML helper (PID ordering), not API; failure recorded honestly. API respawned helper, no Docker crash occurred.
 - 014:corrected lifecycle targets ONLY Python direct child of `/proc/1/task/1/children`. **ALL PASSED**:7 unit tests, bad-key401, model ID, Paris chat/SSE, Tokyo follow-up,20.08GB actual disk reads; real API SIGKILL auto-recovery, manual stop stays stopped, explicit start restores readiness. Short smoke gen rates are NOT benchmark results.
 - 015 AJ: **255099 uncached prompt tokens**, **968.03tok/s prefill**, exact buried-code retrieval (`ORCHID-SILVER-7429`) from one-third through document;11 natural output tokens,267.07s total. Memory peak19,757,936,640bytes (~18.40GiB), below24GiB cap. One synthetic near-full-context needle check, not broad long-context quality suite.
-- Next final check: run short smoke after015 to verify state reset from near-full context, then commit/push receipts/docs, verify clean/up-to-date tree and leave healthy server running. No downloads/builds running.
+- 016 PASSED after015 without restart: auth/chat/SSE/multiturn and26.93GBactualdiskreads, verifying state reset after the255K request. Implementation complete; server left healthy and running unless-stopped. No pending downloads/builds/benchmarks. Optional Unsloth inference/quality/speed comparison is future work, not needed to establish achieved AJ prefill target.
 
 ## Operations
 - `make up`: allowed AJ download+hash verify, pinned image build, idempotent pack, start/wait.

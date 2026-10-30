@@ -18,11 +18,11 @@ User imposed this restriction explicitly during implementation. Keep it in force
 
 ## Verified implementation status (2026-10-30)
 
-- Active allowed quant: AJ-IQ2_XXS87,346,006,560bytes, pinned+hash-verified. Project Maya/Strata-derived CUDA engine; 32K prefill, periodic16K checkpoint cuts disabled, 256K configured context.
-- Experiment012:25,558 uncached repository-code/doc prompt tokens at961.76tok/s;375 natural-end output tokens at4.78tok/s.
-- Experiment015:255,099 uncached prompt tokens at968.03tok/s; exact buried audit-code retrieval passed; peak container RAM19,757,936,640bytes (~18.40GiB), below24GiB cap.
-- Experiment014: real Docker auth/chat/SSE/multi-turn/disk-I/O smoke, automatic API-crash recovery and explicit stop/start semantics passed. Seven model-free automation tests pass.
-- The prefill target is demonstrated on these workloads. The64GB reference's20–25tok/s sustained decode is not reproduced; short-answer smoke rates are not substitutes for the375-token measurement. Unsloth alternatives are size/kernel-compatibility checked, not inference-benchmarked.
+- Active allowed quant: **AJ-IQ2_XXS, 87,346,006,560 bytes**, pinned and hash-verified. Project Maya/Strata-derived CUDA engine; 32K prefill, periodic 16K checkpoint cuts disabled, 256K configured context.
+- Experiment 012: **25,558 uncached repository-code/doc prompt tokens at 961.76 tok/s**; 375 natural-end output tokens at **4.78 tok/s**.
+- Experiment 015: **255,099 uncached prompt tokens at 968.03 tok/s**; exact buried audit-code retrieval passed; peak container RAM 19,757,936,640 bytes (~18.40 GiB), below 24 GiB cap.
+- Experiment 014: real Docker auth/chat/SSE/multi-turn/disk-I/O smoke, automatic API-crash recovery and explicit stop/start semantics passed. Experiment 016 repeated the smoke successfully after the near-full-context request, without restarting. Seven model-free automation tests pass.
+- The prefill target is demonstrated on these workloads. The 64 GB reference's 20–25 tok/s sustained decode is not reproduced; short-answer smoke rates are not substitutes for the 375-token measurement. Unsloth alternatives are size/kernel-compatibility checked, not inference-benchmarked.
 
 ## Deployment and performance
 
