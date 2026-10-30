@@ -107,3 +107,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Native log: ONE32057-token pass in29.98s (1069tok/s), vs two16K passes in010. 800–1000 target met/exceeded on this32Ksyntheticprobe, not a promise for every prompt size. Logical context remains262144; no prefix reuse or expert pruning. Actual generation speed remains to be measured on a longer answer.
 - Outcome=PASS; finish=stop; error=None; RAM=17.93GiB / 24GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 012-aj-repo-natural — maya — 2026-10-30T22:23:27Z
+
+- Configuration commit: `d3c79650c87aa656365a4a1bfe2c8accd19cd0a1`; receipt: [results/experiment-012-aj-repo-natural.json](results/experiment-012-aj-repo-natural.json).
+- **Prefill: 961.76 tok/s; generation: 4.78 tok/s.** Prompt=25558, generated=375, cached=0; wall=104.82s. TTFT-based prefill includes first-token overhead; prompt style=repo, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=17.78GiB / 24GiB.

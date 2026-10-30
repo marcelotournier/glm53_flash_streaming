@@ -33,6 +33,21 @@ curl -sS http://127.0.0.1:8000/v1/chat/completions \
 
 Unlike the earlier llama.cpp template, Maya explicitly supports `enable_thinking=false`. Generation tests let answers finish naturally. Context is configured at 262,144 tokens; configured capacity is not itself proof of successful long-context retrieval.
 
+## Measured on this host
+
+All rows below use the **87.35 GB AJ quant**, cached prompt tokens=0, and configured context262,144. Rates are local measurements, not borrowed from the post.
+
+| Experiment | Prompt / output tokens | Uncached prefill | Generation |
+|---|---:|---:|---:|
+| 008: 16K batch | 16,058 /2 | 727.09 tok/s | N/A: short probe |
+| 009: 32K batch, default periodic checkpoints | 32,058 /2 | 731.28 tok/s | N/A: short probe |
+| 011: 32K batch, periodic cuts disabled | 32,058 /2 | **1,047.02 tok/s** | N/A: short probe |
+| 012: repository docs/code, natural full answer | 25,558 /375 | **961.76 tok/s** | **4.78 tok/s** |
+
+The crucial upstream setting is **`MAYA_GLM_CKPT_EVERY=0`**. Otherwise the API driver cuts a 32K prompt into two16K calls and streams the experts twice. Whole-turn snapshots remain, but partial-prompt resume checkpoints are disabled. No expert skipping/pruning or KV-prefix reuse was used for these numbers. The 64 GB reference's20–25tok/s decode is **not** reproduced on this lower-memory host.
+
+See linked JSON receipts and exact configuration Git hashes in [EXPERIMENTS.md](EXPERIMENTS.md). Different prompt sizes/styles are not matched speedup ratios.
+
 ## Settings and experiments
 
 - Engine settings: `engines/maya.json` (context, prefill batch, 12 GiB RAM expert tier, worker count, GPU reserve). Run **`make recreate`** after changing them; existing containers retain their original arguments and file mounts.
@@ -40,7 +55,7 @@ Unlike the earlier llama.cpp template, Maya explicitly supports `enable_thinking
 - `make pack`: build upstream's required small BF16-compatible tensors and tokenizer. It does **not** duplicate/requantize all experts. A manifest marker makes this idempotent; `make maya-pack-force` refuses to rewrite a running server's pack.
 - `make smoke EXPERIMENT=<unique-id>`: real model, authentication rejection, factual chat, SSE framing, multi-turn state and actual disk-read counters.
 - `make restart-test EXPERIMENT=<unique-id>`: kill the API process, verify Docker recovery, verify explicit stop stays stopped, then start again.
-- `make bench EXPERIMENT=<unique-id>`: long unique prompt and natural-end answer; records uncached prefill (prompt tokens / TTFT) and generation separately. `PROMPT_REPEATS=3200 PREFILL_ONLY=1` is a ~16K-token prefill probe with a naturally short factual answer; its decode rate is **not sustained throughput**.
+- `make bench EXPERIMENT=<unique-id>`: long unique prompt and natural-end answer; records uncached prefill (prompt tokens / TTFT) and generation separately. `PROMPT_STYLE=repo SOURCE_CHARS=100000` measures repository-code/document context with a full natural answer. `PROMPT_REPEATS=6400 PREFILL_ONLY=1` is a ~32K-token prefill probe with a naturally short factual answer; its decode rate is **not sustained throughput**.
 
 **Commit and push settings before experiments.** The benchmark records the configuration Git hash, exact quant manifest, image ID, mounts, settings, token counts, cache policy, response, timings and outcome. Commit/push the JSON receipt and Markdown report after each run. Keep tests isolated from downloads/builds and other GPU workloads.
 
