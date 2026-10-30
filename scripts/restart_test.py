@@ -27,10 +27,13 @@ def main():
     # Docker's restart policy only becomes active after 10s of uptime.
     time.sleep(11)
     # --init runs as PID 1; terminate the API parent, not a recoverable Maya backend worker.
-    subprocess.run(['docker', 'exec', name, 'sh', '-c',
+    killed = subprocess.run(['docker', 'exec', name, 'sh', '-c',
                     'for p in /proc/[0-9]*/comm; do read n < "$p"; '
-                    'if [ "$n" = python3 ]; then id=${p#/proc/}; '
-                    'kill -KILL "${id%/comm}"; exit 0; fi; done; exit 1'], check=True)
+                    'case "$n" in python3*) id=${p#/proc/}; '
+                    'kill -KILL "${id%/comm}"; exit 0;; esac; done; exit 1'])
+    # Docker can tear down the exec shell just after the API dies; recovery below is the actual assertion.
+    if killed.returncode not in (0, 137):
+        raise RuntimeError(f'Could not signal the API process: exit {killed.returncode}')
     deadline = time.monotonic() + 120
     while time.monotonic() < deadline:
         after = inspect()
