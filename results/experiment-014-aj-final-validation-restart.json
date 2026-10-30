@@ -1,0 +1,9 @@
+{
+  "configuration_commit": "b9c867e18b24f0d9d86b462501ca71e1eb7c3ae0",
+  "tested_at": "2026-10-30T22:33:12Z",
+  "restart_count_before": 0,
+  "restart_count_after": 1,
+  "policy": "unless-stopped",
+  "running": true,
+  "manual_stop_stayed_stopped": true
+}

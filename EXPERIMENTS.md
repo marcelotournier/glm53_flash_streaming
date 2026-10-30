@@ -128,3 +128,17 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only check).
 - Test selected the first `python3*` process by PID-directory ordering, which was the NVML telemetry helper, not the API. The API stayed healthy and correctly respawned that helper; Docker restart count stayed0 because its main process never died.
 - Fix the test to select only the Python child directly parented by PID1 (`docker-init`), then rerun. Do not claim automatic API crash recovery passed on this failed test.
+
+### 014-aj-final-validation-smoke — AJ Maya functional checks
+
+- Config `b9c867e18b24f0d9d86b462501ca71e1eb7c3ae0`; receipt [results/experiment-014-aj-final-validation-smoke.json](results/experiment-014-aj-final-validation-smoke.json).
+- factual chat: prefill=6.3 tok/s; gen=46.6 tok/s; wall=4.34s (short factual answer, NOT sustained speed).
+- SSE repeat (warm): prefill=30.4 tok/s; gen=70.4 tok/s; wall=0.06s (short factual answer, NOT sustained speed).
+- multi-turn state: prefill=6.6 tok/s; gen=17.3 tok/s; wall=3.21s (short factual answer, NOT sustained speed).
+- PASS: auth rejection, model ID, chat, SSE, multi-turn and 20.08 GB real disk reads.
+
+### 014-aj-final-validation-restart — AJ Maya lifecycle
+
+- Config `b9c867e18b24f0d9d86b462501ca71e1eb7c3ae0`; receipt [results/experiment-014-aj-final-validation-restart.json](results/experiment-014-aj-final-validation-restart.json).
+- PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.
+- Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).
