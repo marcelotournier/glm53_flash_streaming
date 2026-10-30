@@ -24,6 +24,14 @@ Defaults: `CPU_MOE=45`, `EXPERT_CACHE=24s`, `BATCH=256`, `CTX=8192`, `THREADS=8`
 
 Receipt for 001: [`results/experiment-001-smoke.json`](results/experiment-001-smoke.json). All requests together read **332.85 GB** of actual disk data; no server restarts/OOM. Post-test RAM 21.4 GiB, GPU 11,202 MiB including desktop. Authentication rejection also passed. These initial tests preceded Git initialization; preserved here rather than inventing a historical commit.
 
+## Prefill-first objective (user update)
+
+Prioritize **uncached prefill throughput**, aiming for hundreds of tok/s if the hardware can genuinely sustain it. Do not confuse prompt-cache reuse with prefill or claim the target before measuring. Current benchmark uses only 460 prompt tokens, so larger ubatches cannot be evaluated fairly without a longer prompt.
+
+Measured staged reads are ~2.66–2.67 GB/s. A ~130 GB cold expert sweep alone costs roughly 49 s; a 512-token batch therefore has an ideal disk-only ceiling near 10 tok/s. Amortizing a sweep over 2K/4K/8K tokens raises that ceiling to roughly 40/80/160 tok/s **before compute**, but GPU activation/buffer memory may prevent those batch sizes. These are estimates, not measured results. The original 240 tok/s recipe uses two much faster NVMes, 64 GB RAM and a 32 GB GPU, not this host.
+
+Next experiments should lengthen the uncached prompt, increase batch/ubatch (2048, then 4096 if safe), and move resident experts back to RAM if activation VRAM requires it. Preserve the full model and single-request metric; record failed/OOM cases too.
+
 ## Longer generation / tuning experiments
 
 Automated entries below are appended by `make bench EXPERIMENT=<id>`.
@@ -55,3 +63,10 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Settings: CPU_MOE=43, cache=24s, batch/ubatch=512, context=8192.
 - **Prefill: 7.80 tok/s; generation: 1.41 tok/s.** New prompt=460, cached=0, generated=128; wall=149.02s; disk read=384.81 GB.
 - RAM=20.62GiB / 24GiB; GPU used/total=18373, 24576 MiB; outcome=PASS.
+
+### 006-gpu3 — interrupted before benchmark (2026-10-30)
+
+- Configuration commit: `e0c5c5757e37b547207e5fd1ac8d5e32d774c397`.
+- CPU_MOE=42, cache24s, batch512: startup succeeded; healthy API, GPU21,511/24,576 MiB. Benchmark request did **not** start before the user pause; no benchmark process remains.
+- Prefill tok/s: **N/A**; generation tok/s: **N/A** (not measured). Do not treat this as a throughput result.
+- User changed priority to maximizing prefill; the next comparison must use longer prompts/larger batches rather than further small-prompt decode tuning.
