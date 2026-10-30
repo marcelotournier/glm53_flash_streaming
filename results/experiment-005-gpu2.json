@@ -1,0 +1,177 @@
+{
+  "id": "005-gpu2",
+  "tested_at": "2026-10-30T19:54:47Z",
+  "configuration_commit": "5a697ba8f7e08da0f98de4ce0bdda57fe730b5b3",
+  "image_id": "sha256:8b3ab39196e579023b4e52608e8b7460718826afebcefb113ce38b5baf91b13b",
+  "command": [
+    "--model",
+    "/models/GLM-5.3-Flash-UD-IQ4_XS-00001-of-00005.gguf",
+    "--alias",
+    "glm-5.3-flash",
+    "--no-mmproj",
+    "--host",
+    "0.0.0.0",
+    "--port",
+    "8080",
+    "--api-key",
+    "<redacted>",
+    "-ngl",
+    "99",
+    "--n-cpu-moe",
+    "43",
+    "--load-mode",
+    "none",
+    "--fit",
+    "off",
+    "--moe-stream-cache",
+    "24s",
+    "--moe-stream-direct",
+    "--moe-stream-io-threads",
+    "8",
+    "--flash-attn",
+    "on",
+    "--cache-type-k",
+    "q8_0",
+    "--cache-type-v",
+    "q8_0",
+    "--ctx-size",
+    "8192",
+    "--parallel",
+    "1",
+    "--batch-size",
+    "512",
+    "--ubatch-size",
+    "512",
+    "--threads",
+    "8",
+    "--cache-ram",
+    "0",
+    "--jinja",
+    "--reasoning-format",
+    "deepseek",
+    "--chat-template-kwargs",
+    "{\"reasoning_effort\":\"low\",\"clear_thinking\":true}",
+    "--temp",
+    "1.0",
+    "--top-p",
+    "0.95"
+  ],
+  "environment": [
+    "PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "NVARCH=x86_64",
+    "NVIDIA_REQUIRE_CUDA=cuda>=12.8 brand=unknown,driver>=470,driver<471 brand=grid,driver>=470,driver<471 brand=tesla,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=vapps,driver>=470,driver<471 brand=vpc,driver>=470,driver<471 brand=vcs,driver>=470,driver<471 brand=vws,driver>=470,driver<471 brand=cloudgaming,driver>=470,driver<471 brand=unknown,driver>=535,driver<536 brand=grid,driver>=535,driver<536 brand=tesla,driver>=535,driver<536 brand=nvidia,driver>=535,driver<536 brand=quadro,driver>=535,driver<536 brand=quadrortx,driver>=535,driver<536 brand=nvidiartx,driver>=535,driver<536 brand=vapps,driver>=535,driver<536 brand=vpc,driver>=535,driver<536 brand=vcs,driver>=535,driver<536 brand=vws,driver>=535,driver<536 brand=cloudgaming,driver>=535,driver<536 brand=unknown,driver>=550,driver<551 brand=grid,driver>=550,driver<551 brand=tesla,driver>=550,driver<551 brand=nvidia,driver>=550,driver<551 brand=quadro,driver>=550,driver<551 brand=quadrortx,driver>=550,driver<551 brand=nvidiartx,driver>=550,driver<551 brand=vapps,driver>=550,driver<551 brand=vpc,driver>=550,driver<551 brand=vcs,driver>=550,driver<551 brand=vws,driver>=550,driver<551 brand=cloudgaming,driver>=550,driver<551 brand=unknown,driver>=560,driver<561 brand=grid,driver>=560,driver<561 brand=tesla,driver>=560,driver<561 brand=nvidia,driver>=560,driver<561 brand=quadro,driver>=560,driver<561 brand=quadrortx,driver>=560,driver<561 brand=nvidiartx,driver>=560,driver<561 brand=vapps,driver>=560,driver<561 brand=vpc,driver>=560,driver<561 brand=vcs,driver>=560,driver<561 brand=vws,driver>=560,driver<561 brand=cloudgaming,driver>=560,driver<561 brand=unknown,driver>=565,driver<566 brand=grid,driver>=565,driver<566 brand=tesla,driver>=565,driver<566 brand=nvidia,driver>=565,driver<566 brand=quadro,driver>=565,driver<566 brand=quadrortx,driver>=565,driver<566 brand=nvidiartx,driver>=565,driver<566 brand=vapps,driver>=565,driver<566 brand=vpc,driver>=565,driver<566 brand=vcs,driver>=565,driver<566 brand=vws,driver>=565,driver<566 brand=cloudgaming,driver>=565,driver<566",
+    "NV_CUDA_CUDART_VERSION=12.8.90-1",
+    "CUDA_VERSION=12.8.1",
+    "LD_LIBRARY_PATH=/usr/local/cuda/lib64",
+    "NVIDIA_VISIBLE_DEVICES=all",
+    "NVIDIA_DRIVER_CAPABILITIES=compute,utility",
+    "NV_CUDA_LIB_VERSION=12.8.1-1",
+    "NV_NVTX_VERSION=12.8.90-1",
+    "NV_LIBNPP_VERSION=12.3.3.100-1",
+    "NV_LIBNPP_PACKAGE=libnpp-12-8=12.3.3.100-1",
+    "NV_LIBCUSPARSE_VERSION=12.5.8.93-1",
+    "NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-8",
+    "NV_LIBCUBLAS_VERSION=12.8.4.1-1",
+    "NV_LIBCUBLAS_PACKAGE=libcublas-12-8=12.8.4.1-1",
+    "NV_LIBNCCL_PACKAGE_NAME=libnccl2",
+    "NV_LIBNCCL_PACKAGE_VERSION=2.25.1-1",
+    "NCCL_VERSION=2.25.1-1",
+    "NV_LIBNCCL_PACKAGE=libnccl2=2.25.1-1+cuda12.8",
+    "NVIDIA_PRODUCT_NAME=CUDA",
+    "LLAMA_ARG_HOST=0.0.0.0",
+    "NVIDIA_TF32_OVERRIDE=0",
+    "GGML_CUDA_REGISTER_HOST=1",
+    "GGML_CUDA_REGISTER_HOST_RW=1",
+    "LLAMA_MOE_STREAM_STATS=1",
+    "LLAMA_MOE_STREAM_PREFETCH=0"
+  ],
+  "request": {
+    "model": "glm-5.3-flash",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Background notes (ignore this repetition): alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. alpha beta gamma delta. \nWrite a detailed practical explanation of why the sky is blue. Use complete sentences and explain scattering, wavelengths, and sunsets. Continue for at least 300 words. Do not discuss the background notes."
+      }
+    ],
+    "max_tokens": 128,
+    "temperature": 0,
+    "seed": 42,
+    "cache_prompt": false,
+    "chat_template_kwargs": {
+      "reasoning_effort": "low"
+    }
+  },
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "length",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "# Why the Sky Is Blue\n\nThe blue color of the sky results from a phenomenon called Rayleigh scattering, which occurs when sunlight interacts with the gases that make up Earth's atmosphere.\n\n## Sunlight and Wavelengths\n\nAlthough sunlight appears white, it is actually composed of all the colors of the visible spectrum, each corresponding to a different wavelength. Blue and violet light have short, energetic wavelengths (roughly 380\u2013450 nanometers), while red and orange light have much longer wavelengths (around 620\u2013750 nanometers). When sunlight enters the atmosphere, it collides with tiny molecules of nitrogen and oxygen, which are"
+        }
+      }
+    ],
+    "created": 1793390086,
+    "model": "glm-5.3-flash",
+    "system_fingerprint": "b0-unknown",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 128,
+      "prompt_tokens": 460,
+      "total_tokens": 588,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "id": "chatcmpl-fvjIUjB7upcdapSTkdMFnzXLv7dTzx2X",
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 460,
+      "prompt_ms": 58985.21,
+      "prompt_per_token_ms": 128.22871739130434,
+      "prompt_per_second": 7.798565097928786,
+      "predicted_n": 128,
+      "predicted_ms": 90017.184,
+      "predicted_per_token_ms": 708.7967244094488,
+      "predicted_per_second": 1.4108417343959574
+    }
+  },
+  "elapsed_s": 149.0235112280002,
+  "disk_read_bytes": 384806891520,
+  "direct_io_files": [
+    {
+      "path": "/models/GLM-5.3-Flash-UD-IQ4_XS-00001-of-00005.gguf",
+      "flags_octal": "0140000"
+    },
+    {
+      "path": "/models/GLM-5.3-Flash-UD-IQ4_XS-00002-of-00005.gguf",
+      "flags_octal": "0140000"
+    },
+    {
+      "path": "/models/GLM-5.3-Flash-UD-IQ4_XS-00003-of-00005.gguf",
+      "flags_octal": "0140000"
+    },
+    {
+      "path": "/models/GLM-5.3-Flash-UD-IQ4_XS-00004-of-00005.gguf",
+      "flags_octal": "0140000"
+    },
+    {
+      "path": "/models/GLM-5.3-Flash-UD-IQ4_XS-00005-of-00005.gguf",
+      "flags_octal": "0140000"
+    }
+  ],
+  "docker_stats": {
+    "BlockIO": "408GB / 98.3kB",
+    "CPUPerc": "0.07%",
+    "Container": "glm53-flash",
+    "ID": "97071167f841",
+    "MemPerc": "85.93%",
+    "MemUsage": "20.62GiB / 24GiB",
+    "Name": "glm53-flash",
+    "NetIO": "8.09kB / 6.7kB",
+    "PIDs": "40"
+  },
+  "gpu_memory_used_total_mib": "18373, 24576",
+  "passed": true
+}
