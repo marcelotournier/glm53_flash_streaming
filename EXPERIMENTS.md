@@ -77,3 +77,10 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Prefill: 187.28 tok/s; generation: 1.65 tok/s.** Prompt=8072, generated=341, cached=0; wall=249.39s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=15.27GiB / 24GiB.
 - Native timings independently report 187.4 tok/s prefill; TTFT 43.10s. Coherent three-paragraph explanation, no reasoning text. Model download paused throughout; Docker image pull still active (possible storage contention). Different prompt size/protocol from experiments003–005, so **not** a matched 24x-engine-speedup claim.
+
+### 008-aj-16k-prefill — maya — 2026-10-30T20:54:44Z
+
+- Configuration commit: `cc037debfca2c87a4230cac42fa363406f522436`; receipt: [results/experiment-008-aj-16k-prefill.json](results/experiment-008-aj-16k-prefill.json).
+- **Prefill: 727.09 tok/s; generation: N/A tok/s.** Prompt=16058, generated=2, cached=0; wall=22.57s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=17.85GiB / 24GiB.
+- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
