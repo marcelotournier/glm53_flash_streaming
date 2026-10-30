@@ -27,3 +27,10 @@ Receipt for 001: [`results/experiment-001-smoke.json`](results/experiment-001-sm
 ## Longer generation / tuning experiments
 
 Automated entries below are appended by `make bench EXPERIMENT=<id>`.
+
+### 002 — Docker crash recovery (2026-10-30)
+
+- Configuration commit: `1ee8b52`; receipt: [`results/restart.json`](results/restart.json).
+- Killed the actual inference child with SIGKILL. Docker automatically restarted it; API ready again. Restart count 0 → 1, policy `unless-stopped`.
+- Prefill tok/s: **N/A**; generation tok/s: **N/A** (lifecycle-only test; no generation request).
+- Paused at user's request immediately after this test. Sustained 128-token benchmark and tuning have not run yet.

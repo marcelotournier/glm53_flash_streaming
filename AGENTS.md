@@ -41,5 +41,7 @@ Implement GLM-5.3-Flash locally in Docker, reusing established NVMe expert-strea
 - Initial real smoke PASS: correct Paris answer for chat, SSE, and 434-token staged prompt; bad-key rejected; actual five open GGUF FDs checked for O_DIRECT bit (0140000), not inferred from CLI. Actual disk reads +332.85 GB, no restart.
 - Initial smoke rates (short 3-token replies only): cold prefill 1.23 / gen 1.38 tok/s; warm SSE prefill 1.44 / gen 4.08; multi-batch prefill 4.15 / gen 2.44. Not sustained decode benchmarks. RAM after 21.4 GiB, GPU 11202 MiB including desktop.
 - Full measurements in EXPERIMENTS.md, original receipt results/experiment-001-smoke.json. Added make bench/script for >=64-token decode, zero reused prompt tokens, Git-linked JSON receipts and automatic Markdown entries. Commit settings BEFORE each bench; commit results AFTER.
-- Next: run automatic crash recovery, baseline 128-token decode benchmark, one bounded GPU-layer/batch tuning comparison if memory allows, final smoke and documentation. Keep final server running unless-stopped.
+- Automatic crash recovery PASS: inference SIGKILL, Docker restarted automatically, restart count 0→1, healthy API again. Receipt results/restart.json; experiment 002 in EXPERIMENTS.md.
+- Paused AGAIN at user's request immediately after crash test. No benchmark or tuning in background. Persistent server left running.
+- Next on continue: baseline 128-token decode benchmark (restart first, then `make bench EXPERIMENT=003-baseline`), one bounded GPU-layer/batch tuning comparison if memory allows, final smoke/documentation. Commit settings before experiments and results after. Keep final server running unless-stopped.
 
