@@ -99,3 +99,11 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Outcome=PASS; finish=stop; error=None; RAM=17.93GiB / 24GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
 - Native diagnostic proved the 32K allocation fits, but the API driver's default **periodic checkpoint every16K** split the prompt into two calls:16384tokens/21.73s +15673tokens/21.57s, each streaming experts again. Next test uses documented `MAYA_GLM_CKPT_EVERY=0` to remove that extra sweep; whole-turn snapshots remain. No new kernels or weight modifications.
+
+### 011-aj-32k-no-periodic-cuts — maya — 2026-10-30T21:04:43Z
+
+- Configuration commit: `1d8dbaf1a2209033af3c973498dc50780a6170e3`; receipt: [results/experiment-011-aj-32k-no-periodic-cuts.json](results/experiment-011-aj-32k-no-periodic-cuts.json).
+- **Prefill: 1047.02 tok/s; generation: N/A tok/s.** Prompt=32058, generated=2, cached=0; wall=31.11s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
+- Native log: ONE32057-token pass in29.98s (1069tok/s), vs two16K passes in010. 800–1000 target met/exceeded on this32Ksyntheticprobe, not a promise for every prompt size. Logical context remains262144; no prefix reuse or expert pruning. Actual generation speed remains to be measured on a longer answer.
+- Outcome=PASS; finish=stop; error=None; RAM=17.93GiB / 24GiB.
+- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
