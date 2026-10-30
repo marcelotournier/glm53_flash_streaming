@@ -58,9 +58,17 @@ def main():
     parser.add_argument('--verify', action='store_true')
     parser.add_argument('--jobs', type=int, default=2)
     parser.add_argument('--check-only', action='store_true', help='Validate the hard size limit without downloading')
+    parser.add_argument('--check-files', action='store_true', help='Validate the size limit and presence/size of all cached files')
     args = parser.parse_args()
     lock = json.loads(args.lock.read_text())
     validate_manifest(lock)
+    if args.check_files:
+        for item in lock['files']:
+            target = args.dest / Path(item['path']).name
+            if not target.is_file() or target.stat().st_size != item['size']:
+                raise RuntimeError(f'Missing/incomplete weight file: {target}; run make download')
+        print('All pinned weight files present, within the 100 GB total-weight limit')
+        return
     if args.check_only:
         print('Manifest is within the 100 GB total-weight limit')
         return

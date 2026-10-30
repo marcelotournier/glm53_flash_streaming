@@ -2,7 +2,7 @@
   "exe": "/app/maya",
   "args": [
     "--glm-pack", "/models/maya-pack",
-    "--max-context", "32768",
+    "--max-context", "262144",
     "--expert-cache", "auto",
     "--vram-reserve-mib", "1200",
     "--prefill", "16384",

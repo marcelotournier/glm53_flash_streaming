@@ -25,7 +25,7 @@ def io_stats():
     name = os.getenv('CONTAINER', 'glm53-flash')
     raw = subprocess.check_output(['docker', 'exec', name, 'sh', '-c',
                                   'for p in /proc/[0-9]*/comm; do '
-                                  'read n < "$p"; if [ "$n" = llama-server ]; then '
+                                  'read n < "$p"; if [ "$n" = llama-server ] || [ "$n" = maya ]; then '
                                   'while IFS= read -r line; do echo "$line"; done < "${p%comm}io"; '
                                   'break; fi; done'], text=True)
     return {k: int(v) for k, v in (line.split(':') for line in raw.splitlines())}
@@ -56,6 +56,7 @@ def validate_chat(result):
 
 def validate_sse(lines):
     text, reasoning, chunks, done, finish = '', '', 0, False, False
+    timings = {}
     for line in lines:
         if isinstance(line, bytes):
             line = line.decode()
@@ -67,6 +68,8 @@ def validate_sse(lines):
             done = True
             break
         event = json.loads(data)
+        if event.get('timings'):
+            timings = event['timings']
         assert 'error' not in event, event
         assert event.get('model') == MODEL, event
         for choice in event.get('choices', []):
@@ -77,7 +80,7 @@ def validate_sse(lines):
             finish |= choice.get('finish_reason') is not None
     assert done and finish and chunks > 1, (done, finish, chunks)
     assert 'paris' in text.lower(), (text, reasoning)
-    return {'content': text, 'reasoning': reasoning, 'chunks': chunks, 'done': done}
+    return {'content': text, 'reasoning': reasoning, 'chunks': chunks, 'done': done, 'timings': timings}
 
 
 def main():
