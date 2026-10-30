@@ -5,7 +5,7 @@
     "--max-context", "262144",
     "--expert-cache", "auto",
     "--vram-reserve-mib", "1200",
-    "--prefill", "16384",
+    "--prefill", "32768",
     "--kv-streaming", "on",
     "--pool-workers", "6"
   ],
