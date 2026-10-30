@@ -70,3 +70,10 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - CPU_MOE=42, cache24s, batch512: startup succeeded; healthy API, GPU21,511/24,576 MiB. Benchmark request did **not** start before the user pause; no benchmark process remains.
 - Prefill tok/s: **N/A**; generation tok/s: **N/A** (not measured). Do not treat this as a throughput result.
 - User changed priority to maximizing prefill; the next comparison must use longer prompts/larger batches rather than further small-prompt decode tuning.
+
+### 007-maya-iq4 — maya — 2026-10-30T20:25:53Z
+
+- Configuration commit: `4446ee2869461848f1c02ee3e434cad5182a66c1`; receipt: [results/experiment-007-maya-iq4.json](results/experiment-007-maya-iq4.json).
+- **Prefill: 187.28 tok/s; generation: 1.65 tok/s.** Prompt=8072, generated=341, cached=0; wall=249.39s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=15.27GiB / 24GiB.
+- Native timings independently report 187.4 tok/s prefill; TTFT 43.10s. Coherent three-paragraph explanation, no reasoning text. Model download paused throughout; Docker image pull still active (possible storage contention). Different prompt size/protocol from experiments003–005, so **not** a matched 24x-engine-speedup claim.
