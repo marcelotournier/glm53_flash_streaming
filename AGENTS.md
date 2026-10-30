@@ -1,6 +1,11 @@
 # Goal
 Implement GLM-5.3-Flash locally in Docker, reusing established NVMe expert-streaming recipes. Use Makefile automation, restart unless manually stopped, and run real Docker server smoke tests. Work autonomously. Keep this file as live memory.
 
+## CRITICAL — model size limit (latest user requirement)
+- Read SPEC.md. **Never use any quant whose combined weight files exceed100GB =100,000,000,000bytes**, in anyengine/format. Limit is total model, NOT per-shard or resident/active bytes. Check pinned manifests before download/start.
+- 157GB IQ4 and125GB EXL3 are now PROHIBITED. Both inference containers stopped; EXL3 download stopped. Preserve historical reports but do NOT restart these candidates or continue EXL3 preparation.
+- Exact user-linked AJ-IQ2_XXS is87,346,006,560bytes and allowed (aj.lock.json). Prioritize this quant with Maya. User post explicitly creditsProjectMaya and this AJquant, not the largerIQ4/EXL3; original screenshots show46.7GB pinnedRAM, 12.8GBGPUexperts, Gen4x16 and863tok/s at7.7Kctx. Our reducedRAM means residency differs; record honest localresults.
+
 ## Git / publication workflow (user requirement)
 - Public remote: https://github.com/marcelotournier/glm53_flash_streaming (origin, main). Use authenticated `gh` CLI to manage GitHub; never publish credentials.
 - **Commit AND push as work progresses.** Before every experiment, commit/push the exact settings and harness; record that full commit hash in the JSON receipt and EXPERIMENTS.md. After each experiment (including failures), record separate prefill/gen tok/s, token counts, cache state, settings, outcome and limitations, then commit/push the receipts + Markdown report.
