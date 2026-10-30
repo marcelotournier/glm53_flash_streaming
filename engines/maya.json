@@ -10,6 +10,7 @@
     "--pool-workers", "6"
   ],
   "cwd": "/opt/maya",
+  "log": "/tmp/maya-engine.log",
   "tokenizer": "/models/maya-pack/tokenizer",
   "model_name": "glm-5.3-flash",
   "gpu": [0],
