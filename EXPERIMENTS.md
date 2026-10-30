@@ -113,3 +113,18 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Configuration commit: `d3c79650c87aa656365a4a1bfe2c8accd19cd0a1`; receipt: [results/experiment-012-aj-repo-natural.json](results/experiment-012-aj-repo-natural.json).
 - **Prefill: 961.76 tok/s; generation: 4.78 tok/s.** Prompt=25558, generated=375, cached=0; wall=104.82s. TTFT-based prefill includes first-token overhead; prompt style=repo, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=17.78GiB / 24GiB.
+
+### 013-aj-validation-smoke — AJ Maya functional checks
+
+- Config `6ef9c6a89b899c1f4f0d5df98b16e01c8491c977`; receipt [results/experiment-013-aj-validation-smoke.json](results/experiment-013-aj-validation-smoke.json).
+- factual chat: prefill=5.1 tok/s; gen=5.2 tok/s; wall=5.69s (short factual answer, NOT sustained speed).
+- SSE repeat (warm): prefill=4.8 tok/s; gen=13.5 tok/s; wall=0.36s (short factual answer, NOT sustained speed).
+- multi-turn state: prefill=5.9 tok/s; gen=5.9 tok/s; wall=3.90s (short factual answer, NOT sustained speed).
+- PASS: auth rejection, model ID, chat, SSE, multi-turn and 26.84 GB real disk reads.
+
+### 013-aj-validation-restart — harness failure (not a deployment failure)
+
+- Config `6ef9c6a89b899c1f4f0d5df98b16e01c8491c977`; receipt [results/experiment-013-aj-validation-restart-failure.json](results/experiment-013-aj-validation-restart-failure.json).
+- Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only check).
+- Test selected the first `python3*` process by PID-directory ordering, which was the NVML telemetry helper, not the API. The API stayed healthy and correctly respawned that helper; Docker restart count stayed0 because its main process never died.
+- Fix the test to select only the Python child directly parented by PID1 (`docker-init`), then rerun. Do not claim automatic API crash recovery passed on this failed test.

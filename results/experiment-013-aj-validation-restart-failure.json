@@ -1,0 +1,18 @@
+{
+  "configuration_commit": "6ef9c6a89b899c1f4f0d5df98b16e01c8491c977",
+  "date": "2026-10-30",
+  "outcome": "test-harness failure: wrong Python process selected",
+  "prefill_tok_s": null,
+  "generation_tok_s": null,
+  "intended_target": "Python API process, direct child of docker-init",
+  "actual_target": "serve/telemetry.py --nvml-child (Python child of API)",
+  "evidence": {
+    "api_pid_in_container": 57,
+    "api_parent_pid": 1,
+    "telemetry_parent_pid": 57,
+    "container_restart_count": 0,
+    "container_running_and_healthy": true,
+    "native_log": "the GPU readings' NVML reader stopped (its pipe broke); starting it again"
+  },
+  "interpretation": "The API was never killed. This is not evidence that Docker restart policy failed. Functional smoke passed separately. Correct the test to target only a direct child of PID 1 and rerun."
+}
