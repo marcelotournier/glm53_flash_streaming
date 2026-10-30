@@ -31,7 +31,7 @@ curl -sS http://127.0.0.1:8000/v1/chat/completions \
   -d '{"model":"glm-5.3-flash","messages":[{"role":"user","content":"Why is the sky blue?"}],"stream":true,"chat_template_kwargs":{"enable_thinking":false}}'
 ```
 
-Unlike the earlier llama.cpp template, Maya explicitly supports `enable_thinking=false`. Generation tests let answers finish naturally. Context is configured at 262,144 tokens; configured capacity is not itself proof of successful long-context retrieval.
+Unlike the earlier llama.cpp template, Maya explicitly supports `enable_thinking=false`. Generation tests let answers finish naturally. Context is configured at 262,144 tokens; a 255,099-token uncached retrieval test passed (see experiment015), rather than relying only on configured capacity.
 
 ## Measured on this host
 
@@ -43,6 +43,9 @@ All rows below use the **87.35 GB AJ quant**, cached prompt tokens=0, and config
 | 009: 32K batch, default periodic checkpoints | 32,058 /2 | 731.28 tok/s | N/A: short probe |
 | 011: 32K batch, periodic cuts disabled | 32,058 /2 | **1,047.02 tok/s** | N/A: short probe |
 | 012: repository docs/code, natural full answer | 25,558 /375 | **961.76 tok/s** | **4.78 tok/s** |
+| 015: near-256K buried-code retrieval | 255,099 /11 | **968.03 tok/s** | N/A: short retrieval |
+
+Experiment015 recovered the exact audit code buried roughly one-third into the document, with zero reused prompt tokens and container memory peak18.40GiB. This is one synthetic retrieval check, not a broad long-context quality evaluation.
 
 The crucial upstream setting is **`MAYA_GLM_CKPT_EVERY=0`**. Otherwise the API driver cuts a 32K prompt into two16K calls and streams the experts twice. Whole-turn snapshots remain, but partial-prompt resume checkpoints are disabled. No expert skipping/pruning or KV-prefix reuse was used for these numbers. The 64 GB reference's20–25tok/s decode is **not** reproduced on this lower-memory host.
 

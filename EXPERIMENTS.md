@@ -142,3 +142,11 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Config `b9c867e18b24f0d9d86b462501ca71e1eb7c3ae0`; receipt [results/experiment-014-aj-final-validation-restart.json](results/experiment-014-aj-final-validation-restart.json).
 - PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.
 - Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).
+
+### 015-aj-near256k-retrieval — maya — 2026-10-30T22:43:14Z
+
+- Configuration commit: `1553b65d07f26148f3e577007ac7cbc573735477`; receipt: [results/experiment-015-aj-near256k-retrieval.json](results/experiment-015-aj-near256k-retrieval.json).
+- **Prefill: 968.03 tok/s; generation: 3.03 tok/s.** Prompt=255099, generated=11, cached=0; wall=267.07s. TTFT-based prefill includes first-token overhead; prompt style=repeated, natural-end answer.
+- Exact `ORCHID-SILVER-7429` retrieved from the sole audit record roughly one-third into the document (~85K tokens). This verifies retrieval well beyond the32K GPU-resident DSA window, not just a large configured API limit. One synthetic needle, not a general long-context quality claim. Native prefill968.6tok/s; peak memory19,757,936,640bytes (~18.40GiB) below24GiB cap. The11-token generation rate is NOT sustained.
+- Outcome=PASS; finish=stop; error=None; RAM=17.85GiB / 24GiB.
+- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
