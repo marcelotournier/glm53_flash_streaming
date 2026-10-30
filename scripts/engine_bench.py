@@ -27,6 +27,8 @@ def main():
     parser.add_argument('--url', default='http://127.0.0.1:8000')
     parser.add_argument('--repeats', type=int, default=1600)
     parser.add_argument('--model-lock', type=Path, default=Path('aj.lock.json'))
+    parser.add_argument('--prompt-style', choices=['repeated', 'repo'], default='repeated')
+    parser.add_argument('--source-chars', type=int, default=100000)
     parser.add_argument('--prefill-only', action='store_true', help='Natural short factual answer; decode rate is not sustained')
     args = parser.parse_args()
     model_manifest = json.loads(args.model_lock.read_text())
@@ -44,8 +46,14 @@ def main():
     if '--api-key' in command:
         command[command.index('--api-key') + 1] = '<redacted>'
     nonce = secrets.token_hex(12)
-    prompt = (f'Independent benchmark {nonce}. Background notes to ignore:\n' +
-              'alpha beta gamma delta. ' * args.repeats +
+    if args.prompt_style == 'repo':
+        sources = [Path(p) for p in ('README.md', 'SPEC.md', 'ENGINES.md', 'Makefile')]
+        sources += sorted(Path('scripts').glob('*.py'))
+        corpus = '\n\n'.join(f'FILE: {p}\n{p.read_text()}' for p in sources)
+        background = (corpus * (args.source_chars // len(corpus) + 1))[:args.source_chars]
+    else:
+        background = 'alpha beta gamma delta. ' * args.repeats
+    prompt = (f'Independent benchmark {nonce}. Background notes to ignore:\n' + background +
               '\nIgnore the background notes. Explain why the sky is blue in three paragraphs. '
               'Mention Rayleigh scattering and why sunsets look red. Answer directly without thinking aloud.')
     if args.prefill_only:
@@ -104,7 +112,8 @@ def main():
     passed = (error is None and done and finish == 'stop' and prompt_n > 256 and
               gen_n >= (1 if args.prefill_only else 32) and expected in text.lower() and final['State']['Running'] and
               final['RestartCount'] == state['RestartCount'] and (cached is None or cached == 0))
-    receipt = {'id': args.id, 'engine': args.engine, 'prefill_only': args.prefill_only, 'configuration_commit': commit,
+    receipt = {'id': args.id, 'engine': args.engine, 'prompt_style': args.prompt_style,
+        'prefill_only': args.prefill_only, 'configuration_commit': commit,
         'tested_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         'image_id': state['Image'], 'command': command, 'mounts': state['Mounts'],
         'container_started_at': state['State']['StartedAt'],
@@ -126,7 +135,7 @@ def main():
         f'- Configuration commit: `{commit}`; receipt: [{path}]({path}).\n'
         f'- **Prefill: {pp} tok/s; generation: {tg} tok/s.** '
         f'Prompt={prompt_n}, generated={gen_n}, cached={cached if cached is not None else "counter unavailable"}; '
-        f'wall={elapsed:.2f}s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.\n'
+        f'wall={elapsed:.2f}s. TTFT-based prefill includes first-token overhead; prompt style={args.prompt_style}, natural-end answer.\n'
         f'- Outcome={"PASS" if passed else "FAIL"}; finish={finish}; error={error}; '
         f'RAM={receipt["docker_stats"]["MemUsage"]}.\n'
         + ('- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.\n' if args.prefill_only else ''))

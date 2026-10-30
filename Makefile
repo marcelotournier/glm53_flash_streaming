@@ -19,6 +19,8 @@ ENGINE ?= maya
 BENCH_CONTAINER ?= $(CONTAINER)
 PROMPT_REPEATS ?= 1600
 PREFILL_ONLY ?= 0
+PROMPT_STYLE ?= repeated
+SOURCE_CHARS ?= 100000
 ENGINE_MODEL_LOCK ?= aj.lock.json
 export CONTAINER HOST PORT API_KEY STARTUP_TIMEOUT REQUEST_TIMEOUT
 
@@ -51,7 +53,7 @@ smoke: wait ## Real AJ model health/auth/chat/SSE/multi-turn smoke test
 bench: engine-bench ## Measure separate prefill/gen rates, save JSON and append EXPERIMENTS.md
 engine-bench: wait ## Natural-EOS OpenAI SSE benchmark; commit/push settings first
 	python3 scripts/engine_bench.py --id "$(EXPERIMENT)" --engine $(ENGINE) --container $(BENCH_CONTAINER) \
-	  --url http://$(HOST):$(PORT) --repeats $(PROMPT_REPEATS) --model-lock $(ENGINE_MODEL_LOCK) $(if $(filter 1,$(PREFILL_ONLY)),--prefill-only,)
+	  --url http://$(HOST):$(PORT) --repeats $(PROMPT_REPEATS) --prompt-style $(PROMPT_STYLE) --source-chars $(SOURCE_CHARS) --model-lock $(ENGINE_MODEL_LOCK) $(if $(filter 1,$(PREFILL_ONLY)),--prefill-only,)
 restart-test: ## Kill inference and verify automatic Docker recovery
 	python3 scripts/restart_test.py --id "$(EXPERIMENT)"
 unit: ## Fast model-free automation tests, including the hard 100 GB limit
