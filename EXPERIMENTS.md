@@ -34,3 +34,10 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Killed the actual inference child with SIGKILL. Docker automatically restarted it; API ready again. Restart count 0 → 1, policy `unless-stopped`.
 - Prefill tok/s: **N/A**; generation tok/s: **N/A** (lifecycle-only test; no generation request).
 - Paused at user's request immediately after this test. Sustained 128-token benchmark and tuning have not run yet.
+
+### 003-baseline — 2026-10-30T19:47:38Z
+
+- Configuration commit: `8fb1427bbdcda8e4d2b2ad4603b0b0d5606b85a5`; receipt: [results/experiment-003-baseline.json](results/experiment-003-baseline.json).
+- Settings: CPU_MOE=45, cache=24s, batch/ubatch=256, context=8192.
+- **Prefill: 4.12 tok/s; generation: 1.34 tok/s.** New prompt=460, cached=0, generated=128; wall=206.34s; disk read=537.62 GB.
+- RAM=21.32GiB / 24GiB; GPU used/total=11170, 24576 MiB; outcome=PASS.

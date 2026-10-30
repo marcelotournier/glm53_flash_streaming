@@ -49,5 +49,7 @@ Implement GLM-5.3-Flash locally in Docker, reusing established NVMe expert-strea
 - Full measurements in EXPERIMENTS.md, original receipt results/experiment-001-smoke.json. Added make bench/script for >=64-token decode, zero reused prompt tokens, Git-linked JSON receipts and automatic Markdown entries. Commit settings BEFORE each bench; commit results AFTER.
 - Automatic crash recovery PASS: inference SIGKILL, Docker restarted automatically, restart count 0→1, healthy API again. Receipt results/restart.json; experiment 002 in EXPERIMENTS.md.
 - Paused again immediately after crash test; then resumed per user request to publish and continue. Public-repo cleanup excludes research scratch and transient results while retaining original history.
-- Next on continue: baseline 128-token decode benchmark (restart first, then `make bench EXPERIMENT=003-baseline`), one bounded GPU-layer/batch tuning comparison if memory allows, final smoke/documentation. Commit settings before experiments and results after. Keep final server running unless-stopped.
+- Public remote created with gh and pushed. Cleanup commit 8fb1427 removes scratch research/transient results from tracked tree; no weights or real keys published.
+- Experiment 003 baseline PASS, configuration 8fb1427bbdcda8e4d2b2ad4603b0b0d5606b85a5: freshly restarted CPU_MOE=45, cache24s, batch256. Prefill 4.12 tok/s (460 new prompt, cached0), gen 1.34 tok/s (128 output), wall206.34s, disk537.62GB, RAM21.32GiB, GPU11170MiB including desktop. Full receipt and Markdown tracked; commit/push next.
+- Next: one bounded GPU-layer/batch tuning comparison if memory allows, final smoke/documentation. Commit AND push settings before experiments and results after. Keep final server running unless-stopped.
 
