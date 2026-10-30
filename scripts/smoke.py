@@ -84,7 +84,9 @@ def main():
     state = inspect()
     assert state['HostConfig']['RestartPolicy']['Name'] == 'unless-stopped'
     assert state['State']['Running']
-    command = state['Config']['Cmd']
+    command = state['Config']['Cmd'].copy()
+    if '--api-key' in command:
+        command[command.index('--api-key') + 1] = '<redacted>'
     assert '--moe-stream-direct' in command and '--moe-stream-cache' in command
     with request('/health') as response:
         assert json.load(response)['status'] == 'ok'

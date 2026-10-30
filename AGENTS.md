@@ -1,6 +1,12 @@
 # Goal
 Implement GLM-5.3-Flash locally in Docker, reusing established NVMe expert-streaming recipes. Use Makefile automation, restart unless manually stopped, and run real Docker server smoke tests. Work autonomously. Keep this file as live memory.
 
+## Git / publication workflow (user requirement)
+- Public remote: https://github.com/marcelotournier/glm53_flash_streaming (origin, main). Use authenticated `gh` CLI to manage GitHub; never publish credentials.
+- **Commit AND push as work progresses.** Before every experiment, commit/push the exact settings and harness; record that full commit hash in the JSON receipt and EXPERIMENTS.md. After each experiment (including failures), record separate prefill/gen tok/s, token counts, cache state, settings, outcome and limitations, then commit/push the receipts + Markdown report.
+- Keep weights, logs, scratch research, caches, build outputs and secrets out of Git via .gitignore. Preserve small reproducibility manifests, vendored licensed patch, scripts and durable JSON receipts.
+- Do not rewrite existing experiment commit history just to tidy scratch files; untrack them in a cleanup commit. No pushes containing real API keys. Final working tree should be clean and pushed.
+
 ## Machine (2026-10-30)
 - Ryzen 7 5700G: 8 cores / 16 threads, AVX2; 27.28 GiB usable RAM.
 - RTX 3090: 24 GiB, sm_86; NVIDIA driver 615.71.09.
@@ -37,11 +43,11 @@ Implement GLM-5.3-Flash locally in Docker, reusing established NVMe expert-strea
 - Paused agent work, leaving the requested persistent Docker server running. `make stop` explicitly stops it.
 
 ## Resumed / experiments (2026-10-30)
-- User requests gen+prefill tok/s reports in Markdown and experiments tracked with Git. Initialized local main repo with local automation identity (GLM deployment experiments <glm-experiments@localhost>); no remote/push.
+- User requests gen+prefill tok/s reports in Markdown and experiments tracked with Git. Initialized local main repo with local automation identity (GLM deployment experiments <glm-experiments@localhost>); later user explicitly requested public GitHub remote and ongoing commits/pushes (workflow above).
 - Initial real smoke PASS: correct Paris answer for chat, SSE, and 434-token staged prompt; bad-key rejected; actual five open GGUF FDs checked for O_DIRECT bit (0140000), not inferred from CLI. Actual disk reads +332.85 GB, no restart.
 - Initial smoke rates (short 3-token replies only): cold prefill 1.23 / gen 1.38 tok/s; warm SSE prefill 1.44 / gen 4.08; multi-batch prefill 4.15 / gen 2.44. Not sustained decode benchmarks. RAM after 21.4 GiB, GPU 11202 MiB including desktop.
 - Full measurements in EXPERIMENTS.md, original receipt results/experiment-001-smoke.json. Added make bench/script for >=64-token decode, zero reused prompt tokens, Git-linked JSON receipts and automatic Markdown entries. Commit settings BEFORE each bench; commit results AFTER.
 - Automatic crash recovery PASS: inference SIGKILL, Docker restarted automatically, restart count 0→1, healthy API again. Receipt results/restart.json; experiment 002 in EXPERIMENTS.md.
-- Paused AGAIN at user's request immediately after crash test. No benchmark or tuning in background. Persistent server left running.
+- Paused again immediately after crash test; then resumed per user request to publish and continue. Public-repo cleanup excludes research scratch and transient results while retaining original history.
 - Next on continue: baseline 128-token decode benchmark (restart first, then `make bench EXPERIMENT=003-baseline`), one bounded GPU-layer/batch tuning comparison if memory allows, final smoke/documentation. Commit settings before experiments and results after. Keep final server running unless-stopped.
 
