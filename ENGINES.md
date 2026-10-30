@@ -35,4 +35,9 @@ Preparation requires ~125.3 GB checkpoint +117.3 GB store plus image space; chec
 | `sergqwer/strata-glm` | Archived NVFP4 experiment (pin `ed37419fccd0c52e07d26d526a29c2098f547843`), 5090/128 GB/two NVMe, separate ~204 GB checkpoint. Poor first candidate here. |
 | Current upstream `Niko1221/Strata` | Current README lists Qwen/DeepSeek, not GLM. Do not assume a Qwen engine can load GLM unchanged. Prefer a GLM-specific maintained fork/Maya. |
 
+### Preparation checks
+
+- Maya CUDA sm_86 build succeeded (152 compilation units). Initial pack attempt at configuration `d924430` stopped safely before serving: upstream's `_paths.py` requires `STRATA_GGUF_PY` explicitly even when the module imports via PYTHONPATH. Added that environment variable to the image; no inference happened, prefill/gen metrics N/A.
+- EXL3 image pull and hash-verified checkpoint download run in parallel; disk/RAM monitored. Existing llama server explicitly stopped during engine transition, not crashed. No repartitioning or changes to the user's other workloads.
+
 Results, failures, limits, configuration Git hashes and local prefill/gen rates go in `EXPERIMENTS.md`; remote claims above are only investigation context. A different quantization/runtime requires new correctness checks, not just a speed comparison.

@@ -22,7 +22,7 @@ COPY --from=build /src/serve /opt/maya/serve
 COPY --from=build /src/LICENSE /opt/maya/LICENSE
 COPY --from=build /src/data /opt/maya/data
 COPY --from=build /llama/gguf-py /opt/llama/gguf-py
-ENV PYTHONPATH=/opt/llama/gguf-py PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/opt/llama/gguf-py STRATA_GGUF_PY=/opt/llama/gguf-py PYTHONUNBUFFERED=1
 LABEL org.opencontainers.image.source="https://github.com/mw00/project-maya" \
       io.local.maya.revision="cd48762b6d4888205c130238dbc0c7f7904993cf"
 WORKDIR /opt/maya
