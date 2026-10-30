@@ -9,6 +9,18 @@ import shutil
 import subprocess
 
 
+MAX_MODEL_BYTES = 100_000_000_000  # CRITICAL user requirement: total quant, decimal GB
+
+
+def validate_manifest(lock):
+    total = sum(item['size'] for item in lock['files'])
+    if total > MAX_MODEL_BYTES:
+        raise ValueError(f'PROHIBITED quant: {total:,} bytes exceeds the 100 GB total-weight limit (SPEC.md)')
+    if total <= 0:
+        raise ValueError('Empty model manifest')
+    return total
+
+
 def sha256(path):
     digest = hashlib.sha256()
     with path.open('rb') as stream:
@@ -45,8 +57,13 @@ def main():
     parser.add_argument('--lock', type=Path, default=Path('model.lock.json'))
     parser.add_argument('--verify', action='store_true')
     parser.add_argument('--jobs', type=int, default=2)
+    parser.add_argument('--check-only', action='store_true', help='Validate the hard size limit without downloading')
     args = parser.parse_args()
     lock = json.loads(args.lock.read_text())
+    validate_manifest(lock)
+    if args.check_only:
+        print('Manifest is within the 100 GB total-weight limit')
+        return
     args.dest.mkdir(parents=True, exist_ok=True)
     needed = 0
     for item in lock['files']:

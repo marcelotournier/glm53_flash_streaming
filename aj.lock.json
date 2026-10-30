@@ -1,0 +1,16 @@
+{
+  "repo": "aj9o9/GLM-5.3-Flash-GGUF",
+  "revision": "07c62fcdeaf1c05d22bd123c3da8058a1b1e63e2",
+  "files": [
+    {
+      "path": "AJ-IQ2_XXS/GLM-5.3-Flash-AJ-IQ2_XXS-00001-of-00002.gguf",
+      "size": 44665098240,
+      "sha256": "1fa0535ecddaee4ff127eb8ffd47d3855ca7efa1cc29c996c24da699c5fbe3f7"
+    },
+    {
+      "path": "AJ-IQ2_XXS/GLM-5.3-Flash-AJ-IQ2_XXS-00002-of-00002.gguf",
+      "size": 42680908320,
+      "sha256": "ab8abbde061254a7f6b1a16b3627c4b77e3084f52e3d9739ebaa515b9365945c"
+    }
+  ]
+}

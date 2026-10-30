@@ -1,5 +1,18 @@
 # Engine investigation (2026-10-30)
 
+**Latest hard constraint: no quant above 100,000,000,000 bytes total weights (SPEC.md).** The125GB EXL3 and157GB IQ4 entries below are historical investigation only; downloads/inference stopped and startup/packing are now blocked by size guards. Only87.35GB AJ-IQ2_XXS is an allowed active candidate.
+
+## Exact user-linked AJ / Maya recipe (confirmed from the post)
+
+Post: https://x.com/ItsmeAjayKV/status/2111045102529593718 (2026-10-16). Retrieved both the post and original screenshots, not inferred from a search snippet. It explicitly credits **Project Maya** and links **aj9o9/GLM-5.3-Flash-GGUF, AJ-IQ2_XXS**. This is distinct from the Sybil/0xSero EXL3 recipe below.
+
+- Exact quant: **87,346,006,560 bytes**, two shards, 2.23 bpw, pinned HF revision `07c62fcdeaf1c05d22bd123c3da8058a1b1e63e2` in `aj.lock.json`. The earlier IQ4_XS test used ~157 GB, so it was not a reproduction of this post.
+- Its dense/attention/shared weights are Q6_K, sensitive gates/indexer Q8_0, routers/norms F32, routed gate/up IQ2_XXS and down IQ2_XXS with higher precision on edge layers. All routed experts retained; unused MTP block removed by the quantizer.
+- Screenshot: 863 tok/s prefill, 20.5 tok/s displayed decode, 7.7K/256K request context, 12.8 GB VRAM expert residency and **46.7 GB pinned RAM**, 48.3% VRAM hit rate; PCIe Gen4 x16, 12-core/24-thread CPU. Different memory residency than this host's ~12 GiB RAM tier and PCIe Gen3.
+- Quality tradeoff is real: model card reports AJ-IQ2_XXS WikiText PPL 4.2314 vs BF16 2.2474 and KLD0.7072 (their 30-chunk experiment, not ours). Do not silently call it the same-quality model as IQ4_XS.
+- Plan: reuse our working pinned Maya build, download+verify the exact AJ quant, build its own small compatibility pack, tune 16K/32K prefill batches and memory budget; target800–1000 but record only actual uncached measurements. Do not replace measured numbers with the post's claim.
+- Storage priority: stop/resume EXL3 checkpoint preparation as needed; its separate117GB expert store must not crowd out this exact requested reproduction. Existing partial downloads remain resumable; never exceed disk free-space reserves.
+
 ## Located the single-3090 0xSero recipe
 
 **[sybil-solutions/glm-flash-lite](https://github.com/sybil-solutions/glm-flash-lite)** (formerly `glm53-flash-offload`). This is the relevant GLM recipe, not the DGX Spark recipe found initially. Public Sybil code and `ghcr.io/0xsero` image lineage identify the connection. Source inspected at `6fe077da79a4d6fc842cf9f50cb703e4409924ca`.

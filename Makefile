@@ -25,9 +25,11 @@ STARTUP_TIMEOUT ?= 1800
 REQUEST_TIMEOUT ?= 1800
 EXPERIMENT ?= $(shell date -u +%Y%m%dT%H%M%SZ)
 GEN_TOKENS ?= 128
-ENGINE ?= exl3
+ENGINE ?= maya
 BENCH_CONTAINER ?= glm53-flash-$(ENGINE)
 PROMPT_REPEATS ?= 1600
+PREFILL_ONLY ?= 0
+ENGINE_MODEL_LOCK ?= $(if $(filter maya,$(ENGINE)),aj.lock.json,$(if $(filter exl3,$(ENGINE)),exl3.lock.json,model.lock.json))
 export CONTAINER HOST PORT API_KEY STARTUP_TIMEOUT REQUEST_TIMEOUT
 
 .PHONY: help download verify image start wait up stop restart recreate remove logs status smoke bench test restart-test unit check
@@ -43,7 +45,8 @@ verify: ## Rehash every model shard against model.lock.json
 image: ## Build CUDA sm_86 server with the pinned NVMe-streaming patch
 	docker build --build-arg BUILD_JOBS=$(BUILD_JOBS) -t $(IMAGE) .
 
-start: ## Start existing container, or create it with restart=unless-stopped
+start: ## Legacy IQ4 startup (prohibited by current 100GB cap; use maya-start)
+	python3 scripts/download.py --lock model.lock.json --check-only
 	@python3 -c 'import json,pathlib; root=pathlib.Path("$(MODEL_DIR)"); files=json.loads(pathlib.Path("model.lock.json").read_text())["files"]; assert all((root/pathlib.Path(f["path"]).name).is_file() and (root/pathlib.Path(f["path"]).name).stat().st_size == f["size"] for f in files), "Missing/incomplete shards: run make download"'
 	@if docker inspect "$(CONTAINER)" >/dev/null 2>&1; then \
 	  docker start "$(CONTAINER)"; \
@@ -72,7 +75,8 @@ up: download image start wait ## Download, build, start, and wait for the real m
 stop: ## Stop server; stays stopped across reboots until make start
 	docker stop --timeout 60 "$(CONTAINER)"
 
-restart: ## Restart the current container and wait for readiness
+restart: ## Legacy IQ4 restart (blocked by current 100GB cap)
+	python3 scripts/download.py --lock model.lock.json --check-only
 	docker restart --timeout 60 "$(CONTAINER)"
 	$(MAKE) wait
 
@@ -110,7 +114,7 @@ test: check smoke restart-test ## Run local checks and real Docker integration t
 engine-bench: ## Natural-EOS OpenAI SSE benchmark for EXL3/Maya; record Git-linked prefill/gen metrics
 	CONTAINER=$(BENCH_CONTAINER) python3 scripts/wait.py
 	python3 scripts/engine_bench.py --id "$(EXPERIMENT)" --engine $(ENGINE) --container $(BENCH_CONTAINER) \
-	  --url http://$(HOST):$(PORT) --repeats $(PROMPT_REPEATS)
+	  --url http://$(HOST):$(PORT) --repeats $(PROMPT_REPEATS) --model-lock $(ENGINE_MODEL_LOCK) $(if $(filter 1,$(PREFILL_ONLY)),--prefill-only,)
 
 include engines/exl3.mk
 include engines/maya.mk

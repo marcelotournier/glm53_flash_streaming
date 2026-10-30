@@ -8,6 +8,7 @@ import secrets
 import subprocess
 import time
 import urllib.request
+from download import validate_manifest
 
 
 def get(url):
@@ -25,7 +26,11 @@ def main():
     parser.add_argument('--container', required=True)
     parser.add_argument('--url', default='http://127.0.0.1:8000')
     parser.add_argument('--repeats', type=int, default=1600)
+    parser.add_argument('--model-lock', type=Path, default=Path('aj.lock.json'))
+    parser.add_argument('--prefill-only', action='store_true', help='Natural short factual answer; decode rate is not sustained')
     args = parser.parse_args()
+    model_manifest = json.loads(args.model_lock.read_text())
+    validate_manifest(model_manifest)
     if not args.id.replace('-', '').isalnum():
         raise ValueError('Use an alphanumeric/hyphen experiment ID')
     path = Path(f'results/experiment-{args.id}.json')
@@ -43,6 +48,9 @@ def main():
               'alpha beta gamma delta. ' * args.repeats +
               '\nIgnore the background notes. Explain why the sky is blue in three paragraphs. '
               'Mention Rayleigh scattering and why sunsets look red. Answer directly without thinking aloud.')
+    if args.prefill_only:
+        prompt = prompt[:prompt.index('\nIgnore the background notes.')] + (
+            '\nIgnore the background notes. What is the capital of France? Answer only with the city name.')
     payload = {'model': 'glm-5.3-flash', 'messages': [{'role': 'user', 'content': prompt}],
                'temperature': 0, 'seed': 42, 'stream': True,
                'stream_options': {'include_usage': True}, 'cache_prompt': False,
@@ -92,12 +100,15 @@ def main():
     prefill = prompt_n / (first - started) if first and prompt_n else None
     decode = (gen_n - 1) / (last - first) if first and last > first and gen_n > 1 else None
     cached = usage.get('prompt_tokens_details', {}).get('cached_tokens')
-    passed = (error is None and done and finish == 'stop' and prompt_n > 256 and gen_n >= 32 and
-              'rayleigh' in text.lower() and final['State']['Running'] and
+    expected = 'paris' if args.prefill_only else 'rayleigh'
+    passed = (error is None and done and finish == 'stop' and prompt_n > 256 and
+              gen_n >= (1 if args.prefill_only else 32) and expected in text.lower() and final['State']['Running'] and
               final['RestartCount'] == state['RestartCount'] and (cached is None or cached == 0))
-    receipt = {'id': args.id, 'engine': args.engine, 'configuration_commit': commit,
+    receipt = {'id': args.id, 'engine': args.engine, 'prefill_only': args.prefill_only, 'configuration_commit': commit,
         'tested_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-        'image_id': state['Image'], 'command': command,
+        'image_id': state['Image'], 'command': command, 'mounts': state['Mounts'],
+        'container_started_at': state['State']['StartedAt'],
+        'model_manifest': model_manifest,
         'environment': [e for e in state['Config']['Env'] if e.startswith(('GLM53_', 'MAYA_', 'STRATA_'))],
         'request': payload, 'usage': usage, 'native_timings': native_timings, 'finish_reason': finish,
         'content': text, 'reasoning': reasoning, 'done': done, 'elapsed_s': elapsed,
@@ -117,7 +128,8 @@ def main():
         f'Prompt={prompt_n}, generated={gen_n}, cached={cached if cached is not None else "counter unavailable"}; '
         f'wall={elapsed:.2f}s. TTFT-based prefill includes first-token overhead; synthetic repeated background, natural-end answer.\n'
         f'- Outcome={"PASS" if passed else "FAIL"}; finish={finish}; error={error}; '
-        f'RAM={receipt["docker_stats"]["MemUsage"]}.\n')
+        f'RAM={receipt["docker_stats"]["MemUsage"]}.\n'
+        + ('- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.\n' if args.prefill_only else ''))
     with Path('EXPERIMENTS.md').open('a') as stream:
         stream.write(report)
     print(report, flush=True)

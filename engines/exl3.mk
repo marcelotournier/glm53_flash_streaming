@@ -21,17 +21,21 @@ exl3-probe: ## Test actual O_DIRECT on this host before building the expert stor
 	docker run --rm --security-opt label=disable -v "$(EXL3_STORE_DIR):/nvx" \
 	  "$(EXL3_IMAGE)" python3 /opt/glm53/docker/preflight.py odirect /nvx
 
-exl3-pack: exl3-probe ## Build upstream's aligned expert store; full SHA256 and sampled byte verification
+exl3-pack: ## Prohibited 125GB candidate: hard size guard rejects before packing
+	python3 scripts/download.py --lock exl3.lock.json --check-only
+	$(MAKE) exl3-probe
 	docker run --rm --name glm53-exl3-pack --security-opt label=disable --memory 12g --memory-swap 12g \
 	  -v "$(EXL3_MODEL_DIR):/models:ro" -v "$(EXL3_STORE_DIR):/nvx" \
 	  -e GLM53_PACK_THREADS=4 "$(EXL3_IMAGE)" pack-store
 
-exl3-verify: ## Re-read the packed expert store using O_DIRECT and verify every record
+exl3-verify: ## Prohibited 125GB candidate: guarded historical verification target
+	python3 scripts/download.py --lock exl3.lock.json --check-only
 	docker run --rm --security-opt label=disable --memory 12g --memory-swap 12g \
 	  -v "$(EXL3_MODEL_DIR):/models:ro" -v "$(EXL3_STORE_DIR):/nvx:ro" \
 	  -e GLM53_PACK_THREADS=4 "$(EXL3_IMAGE)" verify-store
 
-exl3-start: ## Start EXL3 NVMe engine (stop other inference containers first)
+exl3-start: ## Prohibited 125GB candidate: hard size guard rejects before startup
+	python3 scripts/download.py --lock exl3.lock.json --check-only
 	@mkdir -p "$(EXL3_CACHE_DIR)"
 	@if docker inspect "$(EXL3_CONTAINER)" >/dev/null 2>&1; then docker start "$(EXL3_CONTAINER)"; else \
 	  docker run -d --name "$(EXL3_CONTAINER)" --restart unless-stopped --init \

@@ -19,6 +19,15 @@ class AutomationTests(unittest.TestCase):
             self.assertEqual(len(entry['sha256']), 64)
             self.assertGreater(entry['size'], 1000000)
 
+    def test_hard_100gb_limit(self):
+        self.assertEqual(download.validate_manifest({'files': [{'size': 100_000_000_000}]}), 100_000_000_000)
+        with self.assertRaises(ValueError):
+            download.validate_manifest({'files': [{'size': 60_000_000_000}, {'size': 40_000_000_001}]})
+        for name in ('model.lock.json', 'exl3.lock.json'):
+            with self.assertRaises(ValueError):
+                download.validate_manifest(json.loads(Path(name).read_text()))
+        self.assertEqual(download.validate_manifest(json.loads(Path('aj.lock.json').read_text())), 87_346_006_560)
+
     def test_patch_integrity(self):
         self.assertEqual(download.sha256(Path('vendor/glm5next-moe-ssd-streaming.patch')),
                          'd544c2b5f566c0b02483e1a8d6a09db0345c27a1c959b0a194fff8dac05d279b')
