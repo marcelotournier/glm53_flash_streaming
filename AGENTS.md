@@ -1,4 +1,7 @@
-# Current state — IQ3 completed, running
+# Latest state — IQ1_S running with MTP OFF
+User requested IQ1_S MTP n2/n3 benchmarks. 032–034 completed: off5.19tok/s, n2=2.10, n3=1.58 on exact25558-token/cached0 request. Drafts accepted198/348 and242/558. NVMe verification traffic makes MTP slower. Original engines/maya.json untouched; separate fixed profiles committed. Restored IQ1_S MTPoff;035smoke passed; IQ3 preserved/notrunning. See MTP_RESULTS.md. Supersedes older running-IQ3 statements below.
+
+# Historical state — IQ3 completed
 028–031 complete and published: IQ3 exact 25,558-token replay 798.10 prefill/3.02 generation; 32K 888.8 prefill; near256K 836.9 prefill with exact retrieval. Functional/recovery tests pass. IQ3 running; IQ1_S preserved. See IQ3_RESULTS.md. Memory peak hit 24 GiB on 32K: no headroom claim, no RAM increase. Makefile default remains IQ1_S: use explicit QUANT=unsloth-iq3xxs for current operations. Historical state below superseded.
 
 # Current user override — IQ3_XXS authorized

@@ -287,3 +287,11 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Configuration commit: `0389c353e15cacd3eb5d5ec919486c34b8ada258`; receipt: [results/experiment-034-iq1s-mtp-n3.json](results/experiment-034-iq1s-mtp-n3.json).
 - **Prefill: 943.65 tok/s; generation: 1.58 tok/s.** Prompt=25558, generated=429, cached=0; wall=297.88s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=21.5GiB / 24GiB.
+
+### 035-iq1s-mtp-off-restored-smoke — UD-IQ1_S Maya functional checks
+
+- Config `7871e9c024af4e2ba4af0f8d213ed10dfc00ae85`; receipt [results/experiment-035-iq1s-mtp-off-restored-smoke.json](results/experiment-035-iq1s-mtp-off-restored-smoke.json).
+- factual chat: prefill=4.8 tok/s; gen=4.5 tok/s; wall=6.03s (short factual answer, NOT sustained speed).
+- SSE repeat (warm): prefill=5.2 tok/s; gen=10.7 tok/s; wall=0.38s (short factual answer, NOT sustained speed).
+- multi-turn state: prefill=6.0 tok/s; gen=5.8 tok/s; wall=3.88s (short factual answer, NOT sustained speed).
+- PASS: auth rejection, model ID, chat, SSE, multi-turn and 30.89 GB real disk reads.

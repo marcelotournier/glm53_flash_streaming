@@ -1,5 +1,9 @@
 # GLM-5.3-Flash server specification
 
+## Latest: IQ1_S MTP benchmark complete; IQ1_S running, MTP off
+
+User-requested fixed n=2/n=3 draft tests completed (032–034), with fresh MTP-off control. Same exact 25,558-token request/cached0: off **5.19 tok/s**, n2 **2.10**, n3 **1.58**. MTP slower with NVMe streaming. Restored original IQ1_S winning profile; 035 smoke passed. IQ3 preserved but stopped. See [MTP_RESULTS.md](MTP_RESULTS.md). Supersedes running-IQ3 state below.
+
 ## Current result: IQ3 completed and running
 
 See [IQ3_RESULTS.md](IQ3_RESULTS.md): 028–031 verified IQ3 real inference, 32K/near256K retrieval and service recovery. Exact 25,558-token request: **798.10 tok/s prefill /3.02 tok/s generation**, slower than IQ1_S. Memory peak reached 24 GiB on the 32K probe; no additional RAM tier increase authorized. IQ1_S preserved, IQ3 left healthy/running. Default Makefile remains IQ1_S; use explicit `QUANT=unsloth-iq3xxs` for current service operations. Supersedes the old pending TODO/running-IQ1_S state below.
