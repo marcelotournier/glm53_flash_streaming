@@ -159,3 +159,11 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - multi-turn state: prefill=5.5 tok/s; gen=6.2 tok/s; wall=4.15s (short factual answer, NOT sustained speed).
 - PASS: auth rejection, model ID, chat, SSE, multi-turn and 26.93 GB real disk reads.
 - Run immediately after the255K retrieval, without restart: new-conversation state reset works. Final SHA256 verification passed for both AJ shards; `make pack start wait` reused the existing pack/container idempotently; seven unit checks passed again. Server left running/healthy, no OOM,24GiB cap/no swap, `unless-stopped`. Removed only our obsolete stopped oversized llama container to prevent accidental startup; other user containers and cached weights/images untouched.
+
+### 017-unsloth-iq1s-baseline — maya — 2026-10-31T00:31:06Z
+
+- Configuration commit: `c20ab5e251c4f049f64a0f220bfca39d44ac990c`; receipt: [results/experiment-017-unsloth-iq1s-baseline.json](results/experiment-017-unsloth-iq1s-baseline.json).
+- **Prefill: 895.61 tok/s; generation: 3.91 tok/s.** Prompt=25558, generated=462, cached=0; wall=146.36s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- Exact012 AJ request replayed on fully hash-verified93,087,245,088-byte Unsloth IQ1_S, sameMaya image/32Kbatch/256Kctx/12GiBRAM/no-periodiccuts. Coherent natural answer; performance below savedAJ961.76/4.78 targets (about−6.9% prefill/−18.2% generation). Output differs by quant, so decode is same-task rather than identical-token work.
+- Peak container memory22.554GiB, post20.44GiB; do not increase RAMtier by3GiB under24GiB cap without reducing other allocations. NativeGPUcache2268slots14.7GiB, RAM1859slots12GiB, CPUlane8threads, PCIe share0.21, finalexpertcache56.4%hit. Next tuning must inspect actual phase/I/O/CPU bottlenecks. This is a correctness PASS, **not achieved speed parity**.
+- Outcome=PASS; finish=stop; error=None; RAM=20.44GiB / 24GiB.
