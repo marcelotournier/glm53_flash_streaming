@@ -229,3 +229,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Config `3a227c2d27e99d93cedb951eb09742e41617b46a`; receipt [results/experiment-025-iq1s-final-restart.json](results/experiment-025-iq1s-final-restart.json).
 - PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.
 - Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).
+
+### 026-aj-cleanup — user-authorized deletion / next-session TODO
+
+- Deleted models/aj/ (both87.35GB AJ shards and derived pack); active IQ1_S weights/pack and service untouched. AJ manifest/frozenconfig/image/history retained, but restoration now requires re-download and packing. Receipt: [results/experiment-026-aj-cleanup.json](results/experiment-026-aj-cleanup.json).
+- After Btrfs sync, free space283→365GiB; models/ now88GiB (IQ1_S only). No inference performed: prefill tok/s:N/A; generation tok/s:N/A.
+- Documented next-session IQ3_XXS TODO, **do not start now**. KnownUnsloth~120GB candidate violates unchanged100GB cap; requires verifiedeligiblevariant or explicitcap-change approval before any download/preparation/testing. No IQ3 job started.

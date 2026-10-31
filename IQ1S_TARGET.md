@@ -1,6 +1,6 @@
 # Validated Unsloth IQ1_S target / memory
 
-User requested matching the saved AJ baseline's prefill and generation. **Achieved on the matched workloads, 2026-10-31.** AJ remains unloaded and preserved in [BASELINE.md](BASELINE.md).
+User requested matching the saved AJ baseline's prefill and generation. **Achieved on the matched workloads, 2026-10-31.** AJ's historical manifest/config/image/results remain in [BASELINE.md](BASELINE.md); its weights/pack were deleted in026 at the user's request.
 
 ## Exact weights and runtime
 
@@ -50,6 +50,6 @@ Peak observed across winning-profile benchmark runs **22.75GiB**, below24GiB; st
 - Running container `glm53-flash-maya`, policy `unless-stopped`; API `http://127.0.0.1:8000/v1`, model `glm-5.3-flash`, test key `local`. Loopback only.
 - `make start wait`, `make stop`, `make recreate`, `make test EXPERIMENT=<unique-id>` select IQ1_S by default. Do not edit live pack or run another GPU engine concurrently.
 - Reproduce matched request: `make restart`, then `make bench EXPERIMENT=<unique-id> REPLAY_RECEIPT=results/experiment-012-aj-repo-natural.json`. Commit/push settings first.
-- Restore AJ: `make QUANT=aj IMAGE=glm53-maya:aj-baseline recreate`. Uses frozen `engines/aj-baseline.json`, not IQ1_S settings. Preserve both weight sets and image.
+- AJ weights/pack deleted in026; no instant local rollback. Any future restore requires explicit re-download/hash verification and packing before replacing IQ1_S (BASELINE.md). Preserve the active IQ1_S weight set, pack and image.
 - Unsloth CLI guide reviewed in ENGINES.md; not installed or inference-benchmarked. Its documented llama-server wrapper/mmap spill is not what produced these results; no MTP needed to meet the target.
-- User-authorized cleanup018 removed only obsolete IQ4/EXL3 weights and old IQ4 pack. About283GiB disk free; no downloads/builds/tuning jobs left running.
+- Cleanup018 removed obsolete IQ4/EXL3 weights;026 subsequently removed AJ weights/pack. About365GiB free, only IQ1_S remains under models/. Next-session IQ3_XXS investigation is in [TODO.md](TODO.md), blocked for known~120GB Unsloth quant by the unchanged100GB ceiling. Nothing started for IQ3; no downloads/builds/tuning jobs running.

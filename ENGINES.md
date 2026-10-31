@@ -1,6 +1,6 @@
 # Engine investigation (2026-10-30/31)
 
-**Latest hard constraint: no quant above 100,000,000,000 bytes total weights (SPEC.md).** The125GB EXL3 and157GB IQ4 entries below are historical investigation only; downloads/inference stopped and startup/packing are now blocked by size guards. Active deployment is now **93.09 GB Unsloth IQ1_S + Maya**, matching the saved87.35GB AJ target after I/O/residency tuning. Oversized IQ4/EXL3 weight caches were deleted per user instruction; AJ preserved/unloaded. See [IQ1S_TARGET.md](IQ1S_TARGET.md).
+**Latest hard constraint: no quant above 100,000,000,000 bytes total weights (SPEC.md).** The125GB EXL3 and157GB IQ4 entries below are historical investigation only; downloads/inference stopped and startup/packing are now blocked by size guards. Active deployment is now **93.09 GB Unsloth IQ1_S + Maya**, matching the saved87.35GB AJ target after I/O/residency tuning. Oversized IQ4/EXL3 weight caches were deleted per user instruction; AJ config/manifest/image/results retained but its weights/pack explicitly deleted in026. Next-session IQ3_XXS investigation is TODO-only, blocked for known~120GB Unsloth variant by unchanged100GB cap; nothing started. See [IQ1S_TARGET.md](IQ1S_TARGET.md).
 
 ## Exact user-linked AJ / Maya recipe (confirmed from the post)
 
@@ -58,7 +58,7 @@ Header-only range reads of both data shards, parsed with upstream Maya's own `gg
 
 The pinned Maya build includes direct CUDA MMQ cases for IQ1_S, IQ2_XXS, IQ3_XXS, IQ4_XS, Q2_K and Q3_K. Its CPU native-expert tests explicitly cover the real UD-IQ1_S GLM geometry. **UD-IQ1_S was the preferred candidate and is now the tested active model.** IQ1_M has decode support but no direct CUDA MMQ path in this build; those expert layers use a fallback, so a smaller bit label alone does not imply faster prefill.
 
-The format table itself is a source/header check, not a speed measurement. **IQ1_S was subsequently fully downloaded, hash-verified, packed, benchmarked and smoke/lifecycle-tested** in017–025 at the user's explicit request; AJ preserved as rollback. **IQ1_M remains untested**, requiring separate verification, preparation and measurements before adoption. No concurrent downloads/builds during timing.
+The format table itself is a source/header check, not a speed measurement. **IQ1_S was subsequently fully downloaded, hash-verified, packed, benchmarked and smoke/lifecycle-tested** in017–025 at the user's explicit request; AJ config/results preserved as history; its weights/pack deleted per user in026, so no instant local rollback. **IQ1_M remains untested**, requiring separate verification, preparation and measurements before adoption. No concurrent downloads/builds during timing.
 
 ## Located the single-3090 0xSero recipe
 

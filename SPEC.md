@@ -18,17 +18,21 @@ User imposed this restriction explicitly during implementation. Keep it in force
 
 ## Current verified target (2026-10-31): Unsloth parity achieved
 
-User requested preserving/unloading AJ, then matching its961.76tok/s prefill and4.78tok/s natural-answer generation with IQ1_S. **Achieved on exact-request comparisons**; artifacts and reproducibility in [IQ1S_TARGET.md](IQ1S_TARGET.md), original rollback in [BASELINE.md](BASELINE.md).
+User requested preserving/unloading AJ, then matching its961.76tok/s prefill and4.78tok/s natural-answer generation with IQ1_S. **Achieved on exact-request comparisons**; artifacts and reproducibility in [IQ1S_TARGET.md](IQ1S_TARGET.md), historical AJ recipe in [BASELINE.md](BASELINE.md). AJ weights/pack were subsequently deleted at the user's request (026); only config/manifest/image/results remain.
 
 - 021/022: exact25,558-token AJ012 request replay, cached0, **988.78–990.14tok/s prefill and5.02–5.15tok/s generation**,397/375 natural output tokens. No output cap. Same task, not identical output text; CPU/GPU arithmetic placement can cause greedy drift.
 - 023: exact32,058-token AJ011 short probe, **1070.58tok/s** uncached vsAJ1047.02.
 - 024: exact255,099-token AJ015 buried-code retrieval, **995.20tok/s** uncached vsAJ968.03; exact code recovered from~85K. Short11-token decode is not a sustained sample.
 - Winning profile:32Kprefill,256Kcontext/KV streaming,15GiB expert RAM,4independentprefillreaders,4readchunks,78landing slots, periodiccheckpointcuts0. Same24GiB/no-swap cap; largest observed benchmark peak22.75GiB. NoMTP/expert skipping/pruning/requantization.
-- 025: nine unit tests, authenticated chat/SSE/multi-turn/real disk reads immediately after255K, API-SIGKILL automatic Docker recovery and explicit stop/start passed. IQ1_S left healthy/running unless-stopped; AJ unloaded/preserved.
-- User-authorized cleanup018 removed unused IQ4/EXL3 weights/old IQ4 pack, preserved AJ/IQ1_S, and fully reverified all3IQ1_S hashes. About283GiB free.
+- 025: nine unit tests, authenticated chat/SSE/multi-turn/real disk reads immediately after255K, API-SIGKILL automatic Docker recovery and explicit stop/start passed. IQ1_S left healthy/running unless-stopped; AJ was unloaded at validation and its weights/pack later deleted in026.
+- User-authorized cleanup018 removed unused IQ4/EXL3 weights/old IQ4 pack, preserved AJ/IQ1_S, and fully reverified all3IQ1_S hashes. Further user-authorized026 removed AJ weights/pack; now about365GiB free, only IQ1_S remains.
 - Official Unsloth CLI guide/source reviewed as alternative (ENGINES.md), not locally inference-benchmarked; no claim its B200/MTP numbers apply here. Maya met targets without it. These measurements are not broad quality/speed guarantees.
 
-## Previous verified AJ implementation (2026-10-30, now unloaded)
+## Next session TODO — do not start now
+
+Test IQ3_XXS as requested in [TODO.md](TODO.md), but **the100GB ceiling remains unchanged**. Known Unsloth UD-IQ3_XXS (~120GB) is blocked unless an eligible <=100GB variant is verified or the user explicitly approves changing the limit. No IQ3 downloads, preparation, builds or tests started; do not treat this TODO as a cap override.
+
+## Previous verified AJ implementation (2026-10-30, weights now deleted)
 
 - Preserved allowed baseline: **AJ-IQ2_XXS, 87,346,006,560 bytes**, pinned and hash-verified. Project Maya/Strata-derived CUDA engine; 32K prefill, periodic 16K checkpoint cuts disabled, 256K configured context.
 - Experiment 012: **25,558 uncached repository-code/doc prompt tokens at 961.76 tok/s**; 375 natural-end output tokens at **4.78 tok/s**.

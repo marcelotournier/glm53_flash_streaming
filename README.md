@@ -3,7 +3,8 @@
 Local Docker server using the existing **Project Maya** (Strata-derived) engine and **Unsloth UD-IQ1_S**, **93.09 GB** of weights. It now matches/exceeds the saved AJ recipe's measured uncached prefill and generation on the matched workloads.
 
 - **Current target, exact settings/weights:** [IQ1S_TARGET.md](IQ1S_TARGET.md).
-- **Preserved AJ rollback:** [BASELINE.md](BASELINE.md), `engines/aj-baseline.json`. AJ is unloaded; its87.35GB weights/pack/image remain intact.
+- **Historical AJ baseline:** [BASELINE.md](BASELINE.md), `engines/aj-baseline.json`. AJ weights/pack were deleted at the user's request; config/manifest/image/results remain, not an instant local rollback.
+- **Next session:** [TODO.md](TODO.md) — investigate IQ3_XXS, **do not start now**. Known Unsloth~120GB variant conflicts with unchanged100GB ceiling.
 - **All experiments, configuration hashes and receipts:** [EXPERIMENTS.md](EXPERIMENTS.md).
 
 ## Hard limit and quality
@@ -70,13 +71,7 @@ curl -sS http://127.0.0.1:8000/v1/chat/completions \
   -d '{"model":"glm-5.3-flash","messages":[{"role":"user","content":"Why is the sky blue?"}],"stream":true,"chat_template_kwargs":{"enable_thinking":false}}'
 ```
 
-Restore the saved AJ target (never run both on this GPU):
-
-```sh
-make QUANT=aj IMAGE=glm53-maya:aj-baseline recreate
-# Return to the selected IQ1_S profile:
-make QUANT=unsloth-iq1s recreate
-```
+AJ is no longer locally installed. A future authorized restore requires re-download/hash verification, then stopping IQ1_S before packing and recreating; see BASELINE.md. Do not run a bare AJ recreate against missing weights, and never run both engines on this GPU. Nothing is being restored or downloaded for the next-session TODO.
 
 Packing converts only required small tensors/tokenizer for upstream compatibility; it does not requantize the experts. Manifest markers make it idempotent. Repacking a running server is refused. Existing containers retain startup arguments; **recreate** when changing settings, weights or keys.
 
@@ -98,7 +93,7 @@ Receipts capture configuration commit, manifest, image, mounts/identity, full re
 
 - [Project Maya](https://github.com/mw00/project-maya), pinned `cd48762b6d4888205c130238dbc0c7f7904993cf`, ggml `3cf03257f219afbe7334045ff7c6a06ac68c627d`, CUDA12.8.1/sm_86 + AVX2. MIT license included in container.
 - [Unsloth GLM GGUF](https://huggingface.co/unsloth/GLM-5.3-Flash-GGUF), IQ1_S revision pinned in manifest. [Original Z.ai model](https://huggingface.co/zai-org/GLM-5.3-Flash).
-- [Original AJ/Maya post](https://x.com/ItsmeAjayKV/status/2111045102529593718) and [AJ quant](https://huggingface.co/aj9o9/GLM-5.3-Flash-GGUF): replicated first, preserved as rollback.
+- [Original AJ/Maya post](https://x.com/ItsmeAjayKV/status/2111045102529593718) and [AJ quant](https://huggingface.co/aj9o9/GLM-5.3-Flash-GGUF): replicated first; configuration/results retained, local weights deleted in026.
 - Official **Unsloth CLI/GLM guide alternative** reviewed in [ENGINES.md](ENGINES.md). Its GGUF backend is llama-server; advertised3.3x is mainly B200 long-context decode/MTP, not a demonstrated NVMe-prefill gain here. CLI not locally inference-benchmarked; no installer/UI/host agent changes needed for achieved Maya results.
 - 0xSero/Sybil NVMe recipe and earlier MIT llama.cpp streaming patch investigated; oversized weights prohibited/deleted. Research/provenance in ENGINES.md and vendor/.
 

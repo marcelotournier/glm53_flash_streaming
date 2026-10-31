@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-31T01:21:43.981276+00:00",
+  "action": "User-authorized deletion of models/aj, including both AJ GGUF shards and derived Maya pack",
+  "configuration_commit_before": "2f5b327",
+  "preserved": [
+    "models/unsloth-iq1s",
+    "engines/aj-baseline.json",
+    "aj.lock.json",
+    "glm53-maya:aj-baseline image",
+    "historical experiment receipts"
+  ],
+  "free_bytes_before": 303186845696,
+  "free_bytes_after": 391484403712,
+  "prefill_tok_s": null,
+  "generation_tok_s": null,
+  "note": "No inference experiment. IQ1_S remains active. IQ3_XXS next-session TODO only; do not start now. Existing >100GB candidates remain prohibited without explicit cap change.",
+  "measurement_note": "After sync -f models committed Btrfs delayed frees"
+}

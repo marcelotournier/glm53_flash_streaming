@@ -4,14 +4,15 @@ Local GLM-5.3-Flash Docker service, reusing established NVMe expert streaming, r
 ## CRITICAL: 100 GB total weight ceiling
 - Never download for use, prepare, load, serve or benchmark weights above **100,000,000,000 bytes summed over ALL shards**. Not GiB, not per shard, not only active/resident weights. Applies to every engine/format.
 - Current **Unsloth UD-IQ1_S =93,087,245,088 bytes**, three full shards, SHA256-verified (`unsloth-iq1s.lock.json`). No expert requantization/pruning/skipping.
-- Preserved **AJ-IQ2_XXS =87,346,006,560 bytes**, two verified shards (`aj.lock.json`), unloaded.
+- Historical **AJ-IQ2_XXS =87,346,006,560 bytes** (`aj.lock.json`); user explicitly requested deleting its weights/pack in026, completed. Config/image/results retained, no instant local rollback.
 - Allowed but NOT downloaded/inference-tested: Unsloth IQ1_M97,579,344,672bytes (`unsloth-iq1m.lock.json`); decode supported but no direct IQ1_M MMQ in pinned build.
 - PROHIBITED: Unsloth IQ2_XXS101,844,951,904bytes (94.85GiB UI label still exceeds cap), old IQ4~157GB, EXL3~125GB. User explicitly authorized deleting IQ4/EXL3 caches in018; removed them and old root IQ4 pack. Never restore/use oversized weights. Historical manifests/reports only.
 - Hard guard in scripts/download.py; startup/pack/checks enforce file sizes, manifest-bound pack marker and container quant+manifest-SHA identity. Don't bypass.
 
 ## Current state: IQ1_S parity goal COMPLETE (2026-10-31)
 User asked to preserve AJ, unload it, then make IQ1_S as fast for uncached prefill and generation. **Achieved on exact matched requests**, validated and published. No pending downloads/builds/benchmarks.
-- **IQ1S_TARGET.md**: exact winning artifacts/profile/settings, reproduction and caveats. **BASELINE.md**: saved AJ rollback. Preserve both weights/packs and baseline image.
+- **IQ1S_TARGET.md**: exact winning artifacts/profile/settings, reproduction and caveats. **BASELINE.md**: historical AJ recipe/config/image, but AJ weights/pack deleted026 per user. Preserve activeIQ1_Sweights/pack/image.
+- **NEXT SESSION TODO (do NOT start now): test IQ3_XXS**, identifypublisher/pin/sumshards first. KnownUnslothUD-IQ3_XXS~120GB conflictswithUNCHANGED100GBcap; blockedunlessverified<=100GBvariantorEXPLICITusercapchange. TODO.md recordsconditionalplan; NOIQ3download/build/pack/infer/benchmarkstarted. LeaveIQ1_S256Kserverrunning.
 - Running/healthy container `glm53-flash-maya`, `unless-stopped`,24GiB RAM/no swap, read-only IQ1_S mount. API http://127.0.0.1:8000/v1 ; model `glm-5.3-flash`; test key `local`. Loopback only; recreate to change startup args/key.
 - Default Makefile **QUANT=unsloth-iq1s**; model dir `models/unsloth-iq1s`, compatibility pack `maya-pack/`. Both full expert originals and unused MTP weights remain, total93GB; MTP disabled at runtime.
 - HF source `unsloth/GLM-5.3-Flash-GGUF@a38483c8cd5df544f53d70fb281afe97369d5ab6`. Manifest SHA256 `f11a71472a31b00a9f6daa00cb521745d4f22b5555b68bcd4c2208134a4fd615`. Full hashes/sizes reverified018, receipt results/experiment-018-iq1s-integrity-cleanup.json.
@@ -23,9 +24,9 @@ User asked to preserve AJ, unload it, then make IQ1_S as fast for uncached prefi
 ## Exact runtime / preserved AJ
 - Image **sha256:af26ebe63f5296347660dd6091655235c74279fac8ab8fca1fd690fc488b950d**, tags `glm53-maya:local` and preserved `glm53-maya:aj-baseline`.
 - Project Maya (Strata-derived) `cd48762b6d4888205c130238dbc0c7f7904993cf`, ggml `3cf03257f219afbe7334045ff7c6a06ac68c627d`, CUDA12.8.1/sm_86, portable AVX2. Build engines/maya.Dockerfile, MIT license in container.
-- AJ retained in models/aj/, HF `aj9o9/GLM-5.3-Flash-GGUF@07c62fcdeaf1c05d22bd123c3da8058a1b1e63e2`; originalSHA manifest382861e45b2e9da7ef814647cd94360cd83eb1bf2124093a6c5674b5b7469699.
+- AJ weights/former models/aj/ pack DELETED026; reproducibility source HF `aj9o9/GLM-5.3-Flash-GGUF@07c62fcdeaf1c05d22bd123c3da8058a1b1e63e2`; originalSHA manifest382861e45b2e9da7ef814647cd94360cd83eb1bf2124093a6c5674b5b7469699.
 - Frozen AJ config **engines/aj-baseline.json**, SHA2562b34c875d977b6ca439e1821decefb42dcee63a720e41918e552f7742e03c57f;12GiB tier, default8readchunks/automatic prefill readers. Unit test protects it. Don't overwrite during tuning.
-- Restore AJ: **make QUANT=aj IMAGE=glm53-maya:aj-baseline recreate**. Return: make QUANT=unsloth-iq1s recreate. Only one GPU engine at a time; `make start` intentionally rejects different model mounts, use recreate when switching.
+- AJ restore now requires authorized **make QUANT=aj download**, explicit **make stop**, then **make QUANT=aj pack BEFORE make QUANT=aj IMAGE=glm53-maya:aj-baseline recreate**; otherwise recreating removesIQ1_SbeforemissingAJfilesfail. No instantrollback. Return: make QUANT=unsloth-iq1s recreate. Only one GPU engine at a time; `make start` intentionally rejects different model mounts, use recreate when switching.
 - Small upstream BF16 compatibility pack/tokenizer needed for each quant; original experts unchanged. Marker .ready binds to manifest; don't repack a running server. STRATA_GGUF_PY=/opt/llama/gguf-py required by upstream packer (already fixed in image).
 
 ## Measurements / proof
@@ -44,7 +45,7 @@ Exact commits, requests, answers, manifests, image IDs, native logs/metrics and 
 - Ryzen7 5700G,8cores/16threads, AVX2/FMA/F16C;27.28GiB usable RAM. RTX3090 24GiB sm_86, PCIe3x16, driver615.71.09. Single970 EVO Plus1TB NVMe, Btrfs; actual aligned O_DIRECT probe passed. No host filesystem/RAID changes.
 - Rootless Docker29.8.1/context rootless; NVIDIA CDI `--device nvidia.com/gpu=all`; SELinux bind mounts need `--security-opt label=disable`. No Compose. User Docker service+linger enabled, no sudo needed. Unlimitedmemlock flag rejected by rootless hard limit; CUDA registration works without it.
 - Winning peak≤22.75GiB under24cap, steady~20.9–21.3GiB, host available~4GiB. Crucial lesson: peak22.7 atRAM12 included~4.8GB reclaimable inactive_file; actual anon+shmem~18.1GiB. Checked this before RAM15 (idle20.73GiB<22.5guard); don't blindly subtract peak or treat pinned shmem as reclaimable. Don't increase RAM further without measuring.
-- About283GiB disk free after018; models/ ~170GiB, only AJ+IQ1_S. Do not touch other user containers/images/workloads (Qwen setup etc), Steam data, or blindly prune Docker. Our obsolete oversized llama container removed; old images unused.
+- About365GiB disk free after026AJcleanup; models/ ~88GiB, onlyIQ1_S. AJ83GiB weights/pack explicitlydeleted; manifests/config/results retained. NoIQ3activity. Do not touch other user containers/images/workloads (Qwen setup etc), Steam data, or blindly prune Docker. Our obsolete oversized llama container removed; old images unused.
 
 ## Operations / measurement discipline
 - make up: selected quant download+SHAverify, pinned image, idempotent pack, start/wait. make status/logs/stop/start wait/restart/recreate. Existing containers retain arguments/mounts; recreate after settings edits.
