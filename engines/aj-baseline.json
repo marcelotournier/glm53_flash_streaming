@@ -1,0 +1,24 @@
+{
+  "exe": "/app/maya",
+  "args": [
+    "--glm-pack", "/models/maya-pack",
+    "--max-context", "262144",
+    "--expert-cache", "auto",
+    "--vram-reserve-mib", "1200",
+    "--prefill", "32768",
+    "--kv-streaming", "on",
+    "--pool-workers", "6"
+  ],
+  "cwd": "/opt/maya",
+  "log": "/tmp/maya-engine.log",
+  "tokenizer": "/models/maya-pack/tokenizer",
+  "model_name": "glm-5.3-flash",
+  "gpu": [0],
+  "sampling": {"temperature": 1.0, "top_p": 0.95},
+  "reasoning_effort": "low",
+  "env": {
+    "MAYA_GLM_RAM_GB": "12",
+    "MAYA_GLM_NO_MTP": "1",
+    "MAYA_GLM_CKPT_EVERY": "0"
+  }
+}

@@ -8,7 +8,14 @@ Implement a local GLM-5.3-Flash Docker server using established NVMe expert-stre
 - **UD-IQ2_XXS =101,844,951,904 bytes is prohibited** despite being 94.85 GiB. The earlier 157 GB IQ4 and 125 GB EXL3 candidates are prohibited too. Their inference/downloads were explicitly stopped when user imposed the cap; do not resume them. Historical reports/manifests remain only for provenance.
 - `scripts/download.py` enforces the cap before download/check/startup; active startup also checks every shard size and a manifest-bound pack marker. Do not bypass these guards.
 
-## Current deployment
+## Current task — Unsloth IQ1_S comparison (user request)
+- User requests preserving the successful AJ target, unloading it, and making Unsloth IQ1_S match its uncached prefill and sustained generation.
+- AJ server explicitly STOPPED; GPU down to112MiB. Preserve AJ weights/pack/image. **BASELINE.md + engines/aj-baseline.json** freeze exact artifacts, hashes, performance and rollback instructions.
+- Allowed IQ1_S manifest93,087,245,088bytes verified for cap; download into models/unsloth-iq1s (never use larger IQ2_XXS). No AJ inference during tuning.
+- Compare by replaying exact experiment012 request (repo source has changed), natural EOS, cached0, rates separately. Targets961.76 prefill /4.78 sustained gen tok/s;32K probe1047.02, near256K968.03.
+- Next: quant-aware Makefile/labels/checks, download+hash IQ1_S, upstream BF16 pack, cold baseline same settings, bounded tuning using upstream controls if needed. Commit/push settings and results each arm.
+
+## Previous known-good deployment (now unloaded)
 - Active recipe is **Project Maya (Strata-derived) + AJ-IQ2_XXS**, the EXACT quant/engine in user's post: https://x.com/ItsmeAjayKV/status/2111045102529593718 . Confirmed original post + screenshots, not inferred from a search snippet.
 - Public repo: https://github.com/marcelotournier/glm53_flash_streaming ; origin/main. Use authenticated `gh`; never publish credentials.
 - Container: `glm53-flash-maya`; local image `glm53-maya:local`; API http://127.0.0.1:8000/v1 ; model `glm-5.3-flash`; default test key `local`. Loopback-only, auth enforced. `make stop` explicitly stops it.
