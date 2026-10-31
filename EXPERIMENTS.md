@@ -269,3 +269,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Config `7aae469e64bc793a015e9a5cf775dcb218035c0b`; receipt [results/experiment-031-iq3-validation-restart.json](results/experiment-031-iq3-validation-restart.json).
 - PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.
 - Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).
+
+### 032-iq1s-mtp-off — maya — 2026-10-31T02:24:39Z
+
+- Configuration commit: `5883f567401eecc43c2978d81bb88e15929d1cee`; receipt: [results/experiment-032-iq1s-mtp-off.json](results/experiment-032-iq1s-mtp-off.json).
+- **Prefill: 986.94 tok/s; generation: 5.19 tok/s.** Prompt=25558, generated=397, cached=0; wall=102.13s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=21.24GiB / 24GiB.
