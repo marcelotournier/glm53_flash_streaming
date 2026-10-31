@@ -167,3 +167,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Exact012 AJ request replayed on fully hash-verified93,087,245,088-byte Unsloth IQ1_S, sameMaya image/32Kbatch/256Kctx/12GiBRAM/no-periodiccuts. Coherent natural answer; performance below savedAJ961.76/4.78 targets (about−6.9% prefill/−18.2% generation). Output differs by quant, so decode is same-task rather than identical-token work.
 - Peak container memory22.554GiB, post20.44GiB; do not increase RAMtier by3GiB under24GiB cap without reducing other allocations. NativeGPUcache2268slots14.7GiB, RAM1859slots12GiB, CPUlane8threads, PCIe share0.21, finalexpertcache56.4%hit. Next tuning must inspect actual phase/I/O/CPU bottlenecks. This is a correctness PASS, **not achieved speed parity**.
 - Outcome=PASS; finish=stop; error=None; RAM=20.44GiB / 24GiB.
+
+### 018-iq1s-integrity-cleanup — user-authorized storage cleanup
+
+- Removed five unused oversized IQ4 shards, their old root compatibility pack, and incomplete EXL3 directories. Preserved AJ baseline and IQ1_S weights/packs; active container mounts only IQ1_S.
+- **SHA256 + exact byte-size verification PASS for all three IQ1_S shards**, total93,087,245,088bytes. Receipt: [results/experiment-018-iq1s-integrity-cleanup.json](results/experiment-018-iq1s-integrity-cleanup.json).
+- Free disk space37→283GiB; model directory416→170GiB. No model inference performed during this audit; prefill tok/s:N/A; generation tok/s:N/A.

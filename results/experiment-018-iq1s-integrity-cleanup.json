@@ -1,0 +1,38 @@
+{
+  "verified_at": "2026-10-31T00:38:34.012109+00:00",
+  "manifest_sha256": "f11a71472a31b00a9f6daa00cb521745d4f22b5555b68bcd4c2208134a4fd615",
+  "method": "make QUANT=unsloth-iq1s verify: full-file SHA256 and byte-size comparison",
+  "total_weight_bytes": 93087245088,
+  "shards": [
+    {
+      "file": "models/unsloth-iq1s/GLM-5.3-Flash-UD-IQ1_S-00001-of-00003.gguf",
+      "bytes": 9429984,
+      "sha256": "909a8a2dedb493c5a694facfd1e0e9a3309ac66fbb9d270c024ff5d12e0d565f",
+      "verified": true
+    },
+    {
+      "file": "models/unsloth-iq1s/GLM-5.3-Flash-UD-IQ1_S-00002-of-00003.gguf",
+      "bytes": 49621122496,
+      "sha256": "b99c4dd929601884ff95d9ddeb581a5ef93fd281c37c162e48b2981bf23c0830",
+      "verified": true
+    },
+    {
+      "file": "models/unsloth-iq1s/GLM-5.3-Flash-UD-IQ1_S-00003-of-00003.gguf",
+      "bytes": 43456692608,
+      "sha256": "9bb0ff754968d588793d795c715cc2a7d5292280ff9d0df46b7e1edd57da34a1",
+      "verified": true
+    }
+  ],
+  "deleted": [
+    "five root models/GLM-5.3-Flash-UD-IQ4_XS GGUF shards",
+    "models/maya-pack",
+    "models/exl3",
+    "models/exl3-cache",
+    "models/exl3-store"
+  ],
+  "preserved": [
+    "models/aj",
+    "models/unsloth-iq1s"
+  ],
+  "passed": true
+}
