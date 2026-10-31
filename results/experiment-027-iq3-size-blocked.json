@@ -1,0 +1,35 @@
+{
+  "experiment": "027-iq3-size-blocked",
+  "checked_at": "2026-10-31T01:26:18.515737+00:00",
+  "repository": "unsloth/GLM-5.3-Flash-GGUF",
+  "revision": "a38483c8cd5df544f53d70fb281afe97369d5ab6",
+  "files": [
+    {
+      "path": "UD-IQ3_XXS/GLM-5.3-Flash-UD-IQ3_XXS-00001-of-00004.gguf",
+      "bytes": 9429984,
+      "publisher_sha256": "632f4fabe03ea73d20c299c8ef00c4a16e47dd9ab3f1750a8585b92eb70dfa74"
+    },
+    {
+      "path": "UD-IQ3_XXS/GLM-5.3-Flash-UD-IQ3_XXS-00002-of-00004.gguf",
+      "bytes": 49261511584,
+      "publisher_sha256": "a4dba331fe92ffbd71317839cc1452c57f0b5b3f971a9e96ee5107f9a615cdac"
+    },
+    {
+      "path": "UD-IQ3_XXS/GLM-5.3-Flash-UD-IQ3_XXS-00003-of-00004.gguf",
+      "bytes": 49075832480,
+      "publisher_sha256": "5b728b5b263c662201ef4a4a2b12fb509fe230d012418d0ed37c220a8a5aa230"
+    },
+    {
+      "path": "UD-IQ3_XXS/GLM-5.3-Flash-UD-IQ3_XXS-00004-of-00004.gguf",
+      "bytes": 22020797792,
+      "publisher_sha256": "4b6d16e0d1381e1b4b7eeb6c9799671bf98153a995be12e75e3da93cd97981d2"
+    }
+  ],
+  "total_weight_bytes": 120367571840,
+  "ceiling_bytes": 100000000000,
+  "outcome": "blocked: exceeds unchanged weight ceiling",
+  "server": "glm53-flash-maya stopped; docker inspect exited, running=false",
+  "weights_downloaded": false,
+  "inference_run": false,
+  "verification": "Publisher API metadata only; no local weight hashes verified. Shard_Rewrite duplicate excluded."
+}
