@@ -1,5 +1,9 @@
 # GLM-5.3-Flash server specification
 
+## Current result: IQ3 completed and running
+
+See [IQ3_RESULTS.md](IQ3_RESULTS.md): 028–031 verified IQ3 real inference, 32K/near256K retrieval and service recovery. Exact 25,558-token request: **798.10 tok/s prefill /3.02 tok/s generation**, slower than IQ1_S. Memory peak reached 24 GiB on the 32K probe; no additional RAM tier increase authorized. IQ1_S preserved, IQ3 left healthy/running. Default Makefile remains IQ1_S; use explicit `QUANT=unsloth-iq3xxs` for current service operations. Supersedes the old pending TODO/running-IQ1_S state below.
+
 ## User-authorized IQ3_XXS exception (supersedes conflicting size/TODO text below)
 
 User explicitly approved exceeding 100 GB to run IQ3_XXS after being told its exact size. Only `unsloth-iq3xxs.lock.json` (Unsloth revision `a38483c8cd5df544f53d70fb281afe97369d5ab6`, four shards, **120,367,571,840 bytes**) is authorized up to **121,000,000,000 bytes**. The guard binds this exception to the complete manifest; every other model retains the 100 GB ceiling. No authorization for old IQ4/EXL3 or modified manifests. Preserve IQ1_S weights/pack/settings. Server was stopped for this switch. Reuse the winning profile and 24 GiB/no-swap bound; measure rather than assume memory fit or performance.

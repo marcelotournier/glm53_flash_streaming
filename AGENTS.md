@@ -1,3 +1,6 @@
+# Current state — IQ3 completed, running
+028–031 complete and published: IQ3 exact 25,558-token replay 798.10 prefill/3.02 generation; 32K 888.8 prefill; near256K 836.9 prefill with exact retrieval. Functional/recovery tests pass. IQ3 running; IQ1_S preserved. See IQ3_RESULTS.md. Memory peak hit 24 GiB on 32K: no headroom claim, no RAM increase. Makefile default remains IQ1_S: use explicit QUANT=unsloth-iq3xxs for current operations. Historical state below superseded.
+
 # Current user override — IQ3_XXS authorized
 User explicitly approved the 120,367,571,840-byte pinned Unsloth IQ3_XXS model after being told it exceeds 100 GB. See SPEC.md override: only the exact `unsloth-iq3xxs.lock.json` manifest gets a 121 GB ceiling. Other models keep 100 GB. Supersedes conflicting old cap/TODO statements below. Preserve IQ1_S; server stopped for switch; run/document/commit/push requested.
 

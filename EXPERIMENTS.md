@@ -255,3 +255,17 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Prefill: 836.47 tok/s; generation: 2.27 tok/s.** Prompt=255099, generated=11, cached=0; wall=309.68s. TTFT-based prefill includes first-token overhead; prompt style=replay-015-aj-near256k-retrieval, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=21.64GiB / 24GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 031-iq3-validation-smoke — UD-IQ3_XXS Maya functional checks
+
+- Config `7aae469e64bc793a015e9a5cf775dcb218035c0b`; receipt [results/experiment-031-iq3-validation-smoke.json](results/experiment-031-iq3-validation-smoke.json).
+- factual chat: prefill=3.9 tok/s; gen=5.2 tok/s; wall=7.28s (short factual answer, NOT sustained speed).
+- SSE repeat (warm): prefill=10.5 tok/s; gen=14.7 tok/s; wall=0.24s (short factual answer, NOT sustained speed).
+- multi-turn state: prefill=4.4 tok/s; gen=5.1 tok/s; wall=5.18s (short factual answer, NOT sustained speed).
+- PASS: auth rejection, model ID, chat, SSE, multi-turn and 39.34 GB real disk reads.
+
+### 031-iq3-validation-restart — UD-IQ3_XXS Maya lifecycle
+
+- Config `7aae469e64bc793a015e9a5cf775dcb218035c0b`; receipt [results/experiment-031-iq3-validation-restart.json](results/experiment-031-iq3-validation-restart.json).
+- PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.
+- Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).

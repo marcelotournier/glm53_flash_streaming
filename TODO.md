@@ -1,4 +1,8 @@
-# Next session — do not start now
+# IQ3 request completed
+
+User approved the exact pinned IQ3 size exception after 027. Download/verification, pack, real inference, 32K/near256K replays and smoke/recovery tests completed as 028–031. IQ3 left healthy/running; IQ1_S preserved. **See [IQ3_RESULTS.md](IQ3_RESULTS.md)** for results, memory-headroom warning and explicit QUANT operations. Historical plan below is superseded.
+
+# Historical next-session plan
 
 - [ ] Investigate and test **GLM-5.3-Flash IQ3_XXS** against the validated IQ1_S target. Identify the intended publisher/variant first (likely Unsloth UD-IQ3_XXS).
   - **BLOCKED by current size policy for the known Unsloth variant (~120GB).** The100,000,000,000-byte total-weight ceiling remains mandatory. Before any download/preparation/inference, pin and sum exact shard sizes. Proceed only with a verified <=100GB variant or explicit user approval to change the ceiling. This TODO is NOT such approval.
