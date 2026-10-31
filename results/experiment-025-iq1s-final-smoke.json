@@ -1,0 +1,198 @@
+{
+  "configuration_commit": "3a227c2d27e99d93cedb951eb09742e41617b46a",
+  "tested_at": "2026-10-31T01:09:40Z",
+  "image_id": "sha256:af26ebe63f5296347660dd6091655235c74279fac8ab8fca1fd690fc488b950d",
+  "model_manifest": {
+    "repo": "unsloth/GLM-5.3-Flash-GGUF",
+    "revision": "a38483c8cd5df544f53d70fb281afe97369d5ab6",
+    "files": [
+      {
+        "path": "UD-IQ1_S/GLM-5.3-Flash-UD-IQ1_S-00001-of-00003.gguf",
+        "size": 9429984,
+        "sha256": "909a8a2dedb493c5a694facfd1e0e9a3309ac66fbb9d270c024ff5d12e0d565f"
+      },
+      {
+        "path": "UD-IQ1_S/GLM-5.3-Flash-UD-IQ1_S-00002-of-00003.gguf",
+        "size": 49621122496,
+        "sha256": "b99c4dd929601884ff95d9ddeb581a5ef93fd281c37c162e48b2981bf23c0830"
+      },
+      {
+        "path": "UD-IQ1_S/GLM-5.3-Flash-UD-IQ1_S-00003-of-00003.gguf",
+        "size": 43456692608,
+        "sha256": "9bb0ff754968d588793d795c715cc2a7d5292280ff9d0df46b7e1edd57da34a1"
+      }
+    ]
+  },
+  "models": {
+    "object": "list",
+    "data": [
+      {
+        "id": "glm-5.3-flash",
+        "object": "model",
+        "status": {
+          "value": "loaded"
+        },
+        "meta": {
+          "n_ctx": 262144
+        },
+        "context_length": 262144,
+        "architecture": {
+          "input_modalities": [
+            "text"
+          ],
+          "output_modalities": [
+            "text"
+          ]
+        }
+      }
+    ]
+  },
+  "chat": {
+    "id": "chatcmpl-0c61c85380a9423cbe3837c4",
+    "object": "chat.completion",
+    "created": 1793408972,
+    "model": "glm-5.3-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Paris"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 2,
+      "total_tokens": 29,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 27,
+      "prompt_ms": 4515.1,
+      "prompt_per_token_ms": 167.226,
+      "prompt_per_second": 6.0,
+      "predicted_n": 2,
+      "predicted_ms": 286.7,
+      "predicted_per_token_ms": 143.35,
+      "predicted_per_second": 7.0,
+      "draft_n": 0,
+      "draft_n_accepted": 0
+    }
+  },
+  "stream": {
+    "content": "Paris",
+    "reasoning": "",
+    "chunks": 3,
+    "done": true,
+    "timings": {
+      "cache_n": 26,
+      "prompt_n": 1,
+      "prompt_ms": 68.0,
+      "prompt_per_token_ms": 68.0,
+      "prompt_per_second": 14.7,
+      "predicted_n": 2,
+      "predicted_ms": 110.8,
+      "predicted_per_token_ms": 55.4,
+      "predicted_per_second": 18.1,
+      "draft_n": 0,
+      "draft_n_accepted": 0
+    }
+  },
+  "multi_turn": {
+    "id": "chatcmpl-790b0ee4dd704d69862677a0",
+    "object": "chat.completion",
+    "created": 1793408977,
+    "model": "glm-5.3-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Tokyo"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 46,
+      "completion_tokens": 3,
+      "total_tokens": 49,
+      "prompt_tokens_details": {
+        "cached_tokens": 26
+      }
+    },
+    "timings": {
+      "cache_n": 26,
+      "prompt_n": 20,
+      "prompt_ms": 3009.6,
+      "prompt_per_token_ms": 150.48,
+      "prompt_per_second": 6.6,
+      "predicted_n": 3,
+      "predicted_ms": 447.2,
+      "predicted_per_token_ms": 149.067,
+      "predicted_per_second": 6.7,
+      "draft_n": 0,
+      "draft_n_accepted": 0
+    }
+  },
+  "disk_read_bytes": 26090803200,
+  "phases": [
+    {
+      "name": "factual chat",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 27,
+        "prompt_ms": 4515.1,
+        "prompt_per_token_ms": 167.226,
+        "prompt_per_second": 6.0,
+        "predicted_n": 2,
+        "predicted_ms": 286.7,
+        "predicted_per_token_ms": 143.35,
+        "predicted_per_second": 7.0,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      },
+      "wall_s": 4.829159352997522
+    },
+    {
+      "name": "SSE repeat (warm)",
+      "timings": {
+        "cache_n": 26,
+        "prompt_n": 1,
+        "prompt_ms": 68.0,
+        "prompt_per_token_ms": 68.0,
+        "prompt_per_second": 14.7,
+        "predicted_n": 2,
+        "predicted_ms": 110.8,
+        "predicted_per_token_ms": 55.4,
+        "predicted_per_second": 18.1,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      },
+      "wall_s": 0.1833006840024609
+    },
+    {
+      "name": "multi-turn state",
+      "timings": {
+        "cache_n": 26,
+        "prompt_n": 20,
+        "prompt_ms": 3009.6,
+        "prompt_per_token_ms": 150.48,
+        "prompt_per_second": 6.6,
+        "predicted_n": 3,
+        "predicted_ms": 447.2,
+        "predicted_per_token_ms": 149.067,
+        "predicted_per_second": 6.7,
+        "draft_n": 0,
+        "draft_n_accepted": 0
+      },
+      "wall_s": 3.4615284310020797
+    }
+  ],
+  "passed": true
+}

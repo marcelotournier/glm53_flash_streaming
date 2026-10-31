@@ -1,0 +1,30 @@
+{
+  "configuration_commit": "3a227c2d27e99d93cedb951eb09742e41617b46a",
+  "tested_at": "2026-10-31T01:11:17Z",
+  "model_manifest": {
+    "repo": "unsloth/GLM-5.3-Flash-GGUF",
+    "revision": "a38483c8cd5df544f53d70fb281afe97369d5ab6",
+    "files": [
+      {
+        "path": "UD-IQ1_S/GLM-5.3-Flash-UD-IQ1_S-00001-of-00003.gguf",
+        "size": 9429984,
+        "sha256": "909a8a2dedb493c5a694facfd1e0e9a3309ac66fbb9d270c024ff5d12e0d565f"
+      },
+      {
+        "path": "UD-IQ1_S/GLM-5.3-Flash-UD-IQ1_S-00002-of-00003.gguf",
+        "size": 49621122496,
+        "sha256": "b99c4dd929601884ff95d9ddeb581a5ef93fd281c37c162e48b2981bf23c0830"
+      },
+      {
+        "path": "UD-IQ1_S/GLM-5.3-Flash-UD-IQ1_S-00003-of-00003.gguf",
+        "size": 43456692608,
+        "sha256": "9bb0ff754968d588793d795c715cc2a7d5292280ff9d0df46b7e1edd57da34a1"
+      }
+    ]
+  },
+  "restart_count_before": 0,
+  "restart_count_after": 1,
+  "policy": "unless-stopped",
+  "running": true,
+  "manual_stop_stayed_stopped": true
+}

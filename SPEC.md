@@ -11,22 +11,30 @@
 - Prior experiments with larger models remain historical records only. Those runtimes are stopped and must not be restarted.
 - The 157 GB Unsloth IQ4_XS and 125 GB EXL3 candidates are **prohibited** under this requirement.
 - The exact user-linked **AJ-IQ2_XXS** candidate is **87,346,006,560 bytes** across two shards and is within the limit. Its pinned manifest is `aj.lock.json`.
-- Allowed Unsloth alternatives: **UD-IQ1_S =93,087,245,088 bytes** and **UD-IQ1_M =97,579,344,672 bytes** (pinned manifests `unsloth-iq1s.lock.json` / `unsloth-iq1m.lock.json`). Compatibility is assessed in ENGINES.md; neither is silently made the active model.
+- User-selected active **UD-IQ1_S =93,087,245,088 bytes**, fully verified and benchmarked. Allowed **UD-IQ1_M =97,579,344,672 bytes** remains compatibility-only, not inference-tested. Manifests: `unsloth-iq1s.lock.json` / `unsloth-iq1m.lock.json`.
 - Unsloth **UD-IQ2_XXS =101,844,951,904 bytes is prohibited**, even if a UI labels it 94.85 GiB. Do not confuse GB with GiB.
 
 User imposed this restriction explicitly during implementation. Keep it in force across future sessions and experiments.
 
-## Current task (2026-10-31)
+## Current verified target (2026-10-31): Unsloth parity achieved
 
-User requests **preserving and unloading the AJ baseline**, then making **Unsloth UD-IQ1_S** match its **961.76 tok/s uncached prefill and4.78 tok/s sustained generation**. Saved exact config, image, weights, hashes and rollback in **BASELINE.md**. AJ is stopped, not a competing GPU workload. Compare with the exact experiment012 request, not changed repo text. IQ1_S remains93,087,245,088bytes; no model above100GB permitted. Investigate official Unsloth CLI as an alternative too; separate source/guide findings from actual local benchmark results.
+User requested preserving/unloading AJ, then matching its961.76tok/s prefill and4.78tok/s natural-answer generation with IQ1_S. **Achieved on exact-request comparisons**; artifacts and reproducibility in [IQ1S_TARGET.md](IQ1S_TARGET.md), original rollback in [BASELINE.md](BASELINE.md).
+
+- 021/022: exact25,558-token AJ012 request replay, cached0, **988.78–990.14tok/s prefill and5.02–5.15tok/s generation**,397/375 natural output tokens. No output cap. Same task, not identical output text; CPU/GPU arithmetic placement can cause greedy drift.
+- 023: exact32,058-token AJ011 short probe, **1070.58tok/s** uncached vsAJ1047.02.
+- 024: exact255,099-token AJ015 buried-code retrieval, **995.20tok/s** uncached vsAJ968.03; exact code recovered from~85K. Short11-token decode is not a sustained sample.
+- Winning profile:32Kprefill,256Kcontext/KV streaming,15GiB expert RAM,4independentprefillreaders,4readchunks,78landing slots, periodiccheckpointcuts0. Same24GiB/no-swap cap; largest observed benchmark peak22.75GiB. NoMTP/expert skipping/pruning/requantization.
+- 025: nine unit tests, authenticated chat/SSE/multi-turn/real disk reads immediately after255K, API-SIGKILL automatic Docker recovery and explicit stop/start passed. IQ1_S left healthy/running unless-stopped; AJ unloaded/preserved.
+- User-authorized cleanup018 removed unused IQ4/EXL3 weights/old IQ4 pack, preserved AJ/IQ1_S, and fully reverified all3IQ1_S hashes. About283GiB free.
+- Official Unsloth CLI guide/source reviewed as alternative (ENGINES.md), not locally inference-benchmarked; no claim its B200/MTP numbers apply here. Maya met targets without it. These measurements are not broad quality/speed guarantees.
 
 ## Previous verified AJ implementation (2026-10-30, now unloaded)
 
-- Active allowed quant: **AJ-IQ2_XXS, 87,346,006,560 bytes**, pinned and hash-verified. Project Maya/Strata-derived CUDA engine; 32K prefill, periodic 16K checkpoint cuts disabled, 256K configured context.
+- Preserved allowed baseline: **AJ-IQ2_XXS, 87,346,006,560 bytes**, pinned and hash-verified. Project Maya/Strata-derived CUDA engine; 32K prefill, periodic 16K checkpoint cuts disabled, 256K configured context.
 - Experiment 012: **25,558 uncached repository-code/doc prompt tokens at 961.76 tok/s**; 375 natural-end output tokens at **4.78 tok/s**.
 - Experiment 015: **255,099 uncached prompt tokens at 968.03 tok/s**; exact buried audit-code retrieval passed; peak container RAM 19,757,936,640 bytes (~18.40 GiB), below 24 GiB cap.
 - Experiment 014: real Docker auth/chat/SSE/multi-turn/disk-I/O smoke, automatic API-crash recovery and explicit stop/start semantics passed. Experiment 016 repeated the smoke successfully after the near-full-context request, without restarting. Seven model-free automation tests pass.
-- The prefill target is demonstrated on these workloads. The 64 GB reference's 20–25 tok/s sustained decode is not reproduced; short-answer smoke rates are not substitutes for the 375-token measurement. Unsloth alternatives are size/kernel-compatibility checked, not inference-benchmarked.
+- The prefill target is demonstrated on these workloads. The 64 GB reference's 20–25 tok/s sustained decode is not reproduced; short-answer smoke rates are not substitutes for the 375-token measurement. IQ1_S is now separately benchmarked above; IQ1_M remains compatibility-only.
 
 ## Deployment and performance
 

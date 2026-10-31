@@ -11,7 +11,7 @@ Saved before unloading at user's request (2026-10-30). **Do not delete these wei
 - Prepared compatibility pack: `models/aj/maya-pack/`, `.ready` matches manifest. No expert requantization.
 - Engine image: `sha256:af26ebe63f5296347660dd6091655235c74279fac8ab8fca1fd690fc488b950d` (`glm53-maya:local`). Preserve this image.
 - Source Maya `cd48762b6d4888205c130238dbc0c7f7904993cf`, ggml `3cf03257f219afbe7334045ff7c6a06ac68c627d`.
-- Frozen config: **`engines/aj-baseline.json`**, SHA256 `2b34c875d977b6ca439e1821decefb42dcee63a720e41918e552f7742e03c57f` (byte-identical to winning `engines/maya.json`).
+- Frozen config: **`engines/aj-baseline.json`**, SHA256 `2b34c875d977b6ca439e1821decefb42dcee63a720e41918e552f7742e03c57f` (byte-identical to AJ's winning config at `c848982`; the current `engines/maya.json` now holds the separately validated IQ1_S settings).
 - Context262144, prefill32768, KV streaming on, auto elastic GPU expert cache,1200MiB reserve,12GiB expert RAM, no MTP, **MAYA_GLM_CKPT_EVERY=0**. Container24GiB/no swap; restart unless-stopped;127.0.0.1:8000/v1.
 
 ## Targets to match with Unsloth IQ1_S
@@ -28,4 +28,4 @@ Auth/chat/SSE/multi-turn/real disk reads and API-SIGKILL automatic Docker recove
 
 ## Restore
 
-Use `aj.lock.json`, `models/aj/`, frozen `engines/aj-baseline.json`, and the pinned image above; recreate only this project's Maya container. Never run both quants on the GPU together. Quant-aware Makefile selection will provide `make QUANT=aj recreate` during Unsloth testing. All configurations must retain the **100,000,000,000-byte total weight ceiling**.
+Use `aj.lock.json`, `models/aj/`, frozen `engines/aj-baseline.json`, and the pinned image above; recreate only this project's Maya container. Never run both quants on the GPU together. Restore with **`make QUANT=aj IMAGE=glm53-maya:aj-baseline recreate`**; Makefile selects the frozen AJ config automatically. The validated IQ1_S successor is recorded separately in [IQ1S_TARGET.md](IQ1S_TARGET.md). All configurations must retain the **100,000,000,000-byte total weight ceiling**.

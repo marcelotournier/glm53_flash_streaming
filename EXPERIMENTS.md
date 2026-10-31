@@ -213,3 +213,19 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Prefill: 995.20 tok/s; generation: 3.36 tok/s.** Prompt=255099, generated=11, cached=0; wall=259.48s. TTFT-based prefill includes first-token overhead; prompt style=replay-015-aj-near256k-retrieval, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=20.87GiB / 24GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 025-iq1s-final-smoke — UD-IQ1_S Maya functional checks
+
+- Config `3a227c2d27e99d93cedb951eb09742e41617b46a`; receipt [results/experiment-025-iq1s-final-smoke.json](results/experiment-025-iq1s-final-smoke.json).
+- factual chat: prefill=6.0 tok/s; gen=7.0 tok/s; wall=4.83s (short factual answer, NOT sustained speed).
+- SSE repeat (warm): prefill=14.7 tok/s; gen=18.1 tok/s; wall=0.18s (short factual answer, NOT sustained speed).
+- multi-turn state: prefill=6.6 tok/s; gen=6.7 tok/s; wall=3.46s (short factual answer, NOT sustained speed).
+- PASS: auth rejection, model ID, chat, SSE, multi-turn and 26.09 GB real disk reads.
+- Run immediately after the255K request without restarting before smoke, proving state reset. Subsequent lifecycle phase025 separately passed real API-SIGKILL Docker recovery and explicit stop/start; nine unit tests passed. Final `make pack start wait` idempotence and unit checks passed again; IQ1_S left healthy, noOOM,24GiB/no swap, unless-stopped. No background experiments/downloads/builds.
+- **Goal achieved on matched workloads:** IQ1_S cold repeats988.78–990.14preff /5.02–5.15gen versus savedAJ961.76/4.78;32Kprobe1070.58 vs1047.02; near256K995.20 vs968.03. Winning15GiB expert-tier profile +weights/image hashes preserved in [IQ1S_TARGET.md](IQ1S_TARGET.md); AJ12GiB rollback untouched in [BASELINE.md](BASELINE.md). Short reply rates are not sustained generation; outputs differ, so not identical-token isolation.
+
+### 025-iq1s-final-restart — UD-IQ1_S Maya lifecycle
+
+- Config `3a227c2d27e99d93cedb951eb09742e41617b46a`; receipt [results/experiment-025-iq1s-final-restart.json](results/experiment-025-iq1s-final-restart.json).
+- PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.
+- Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).
