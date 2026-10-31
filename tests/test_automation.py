@@ -31,6 +31,13 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(download.validate_manifest(json.loads(Path('unsloth-iq1s.lock.json').read_text())), 93_087_245_088)
         self.assertEqual(download.validate_manifest(json.loads(Path('unsloth-iq1m.lock.json').read_text())), 97_579_344_672)
 
+    def test_authorized_iq3_manifest(self):
+        lock = json.loads(Path('unsloth-iq3xxs.lock.json').read_text())
+        self.assertEqual(download.validate_manifest(lock), 120_367_571_840)
+        lock['files'][0]['size'] += 1
+        with self.assertRaises(ValueError):
+            download.validate_manifest(lock)
+
     def test_frozen_aj_baseline(self):
         self.assertEqual(download.sha256(Path('engines/aj-baseline.json')),
                          '2b34c875d977b6ca439e1821decefb42dcee63a720e41918e552f7742e03c57f')

@@ -12,8 +12,12 @@ else ifeq ($(QUANT),unsloth-iq1s)
 MODEL_FILE := GLM-5.3-Flash-UD-IQ1_S-00001-of-00003.gguf
 QUANT_LABEL := UD-IQ1_S
 MAYA_CONFIG ?= $(CURDIR)/engines/maya.json
+else ifeq ($(QUANT),unsloth-iq3xxs)
+MODEL_FILE := GLM-5.3-Flash-UD-IQ3_XXS-00001-of-00004.gguf
+QUANT_LABEL := UD-IQ3_XXS
+MAYA_CONFIG ?= $(CURDIR)/engines/maya.json
 else
-$(error Unsupported QUANT: choose aj or unsloth-iq1s; 100 GB total ceiling remains mandatory)
+$(error Unsupported QUANT: choose aj, unsloth-iq1s or explicitly authorized unsloth-iq3xxs)
 endif
 MODEL_LOCK := $(QUANT).lock.json
 IMAGE ?= glm53-maya:local

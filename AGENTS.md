@@ -1,3 +1,6 @@
+# Current user override — IQ3_XXS authorized
+User explicitly approved the 120,367,571,840-byte pinned Unsloth IQ3_XXS model after being told it exceeds 100 GB. See SPEC.md override: only the exact `unsloth-iq3xxs.lock.json` manifest gets a 121 GB ceiling. Other models keep 100 GB. Supersedes conflicting old cap/TODO statements below. Preserve IQ1_S; server stopped for switch; run/document/commit/push requested.
+
 # Goal / authoritative spec
 Local GLM-5.3-Flash Docker service, reusing established NVMe expert streaming, real inference/lifecycle tests, Makefile automation and published experiments. **Read SPEC.md before changing settings/models.** Be concise, don't overengineer.
 

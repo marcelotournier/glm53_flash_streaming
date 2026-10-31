@@ -42,7 +42,7 @@ maya-start: ## Run allowed <=100GB Maya quant, no expert skipping/LoRA/pruning
 	    --memory 24g --memory-swap 24g --shm-size 1g \
 	    --log-opt max-size=20m --log-opt max-file=3 -p $(HOST):$(PORT):8080 \
 	    -v "$(MAYA_MODEL_DIR):/models:ro" -v "$(MAYA_CONFIG):/config/maya.json:ro" \
-	    --label io.local.glm53.quant=$(QUANT_LABEL) --label io.local.glm53.max-weight-bytes=100000000000 \
+	    --label io.local.glm53.quant=$(QUANT_LABEL) --label io.local.glm53.max-weight-bytes=$(if $(filter unsloth-iq3xxs,$(QUANT)),121000000000,100000000000) \
 	    --label io.local.glm53.manifest-sha256=$$(sha256sum $(MAYA_MODEL_LOCK) | cut -d' ' -f1) \
 	    "$(MAYA_IMAGE)" --api-key "$(API_KEY)"; fi
 

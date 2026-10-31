@@ -14,7 +14,11 @@ MAX_MODEL_BYTES = 100_000_000_000  # CRITICAL user requirement: total quant, dec
 
 def validate_manifest(lock):
     total = sum(item['size'] for item in lock['files'])
-    if total > MAX_MODEL_BYTES:
+    # Explicit user authorization: only this exact pinned IQ3_XXS manifest
+    # may exceed 100 GB (120,367,571,840 bytes, bounded at 121 GB).
+    iq3_authorized = hashlib.sha256(json.dumps(lock, sort_keys=True).encode()).hexdigest() == '51d6b357c578c79827a6a3a6435719b12f36e742a62309d2d75a71fe062b9d7a'
+    limit = 121_000_000_000 if iq3_authorized else MAX_MODEL_BYTES
+    if total > limit:
         raise ValueError(f'PROHIBITED quant: {total:,} bytes exceeds the 100 GB total-weight limit (SPEC.md)')
     if total <= 0:
         raise ValueError('Empty model manifest')
@@ -67,10 +71,10 @@ def main():
             target = args.dest / Path(item['path']).name
             if not target.is_file() or target.stat().st_size != item['size']:
                 raise RuntimeError(f'Missing/incomplete weight file: {target}; run make download')
-        print('All pinned weight files present, within the 100 GB total-weight limit')
+        print('All pinned weight files present, within the authorized total-weight limit')
         return
     if args.check_only:
-        print('Manifest is within the 100 GB total-weight limit')
+        print('Manifest is within the authorized total-weight limit')
         return
     args.dest.mkdir(parents=True, exist_ok=True)
     needed = 0

@@ -1,6 +1,10 @@
 # GLM-5.3-Flash server specification
 
-## CRITICAL — quantization size restriction
+## User-authorized IQ3_XXS exception (supersedes conflicting size/TODO text below)
+
+User explicitly approved exceeding 100 GB to run IQ3_XXS after being told its exact size. Only `unsloth-iq3xxs.lock.json` (Unsloth revision `a38483c8cd5df544f53d70fb281afe97369d5ab6`, four shards, **120,367,571,840 bytes**) is authorized up to **121,000,000,000 bytes**. The guard binds this exception to the complete manifest; every other model retains the 100 GB ceiling. No authorization for old IQ4/EXL3 or modified manifests. Preserve IQ1_S weights/pack/settings. Server was stopped for this switch. Reuse the winning profile and 24 GiB/no-swap bound; measure rather than assume memory fit or performance.
+
+## CRITICAL — default quantization size restriction
 
 **Never download for use, load, serve, or benchmark a quantization whose total model weights exceed 100 GB.**
 
