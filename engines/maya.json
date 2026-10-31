@@ -17,7 +17,7 @@
   "sampling": {"temperature": 1.0, "top_p": 0.95},
   "reasoning_effort": "low",
   "env": {
-    "MAYA_GLM_RAM_GB": "12",
+    "MAYA_GLM_RAM_GB": "15",
     "MAYA_GLM_NO_MTP": "1",
     "MAYA_GLM_CKPT_EVERY": "0",
     "MAYA_GLM_READ_CHUNKS": "4",
