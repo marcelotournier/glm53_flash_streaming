@@ -193,3 +193,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Both saved AJ targets (961.76 prefill/4.78 gen) matched/exceeded on this same-task sample.** Increased expert RAM12→15GiB within unchanged24GiB/no-swap cap;4independentprefillreaders,4readchunks,78landing slots,32Kbatch/256Kctx, noMTP/skip/prune/requantization. Actual idle anon+shmem20.73GiB passed22.5GiB preflight guard; peak21.706GiB, final21.26GiB, noOOM/restarts.
 - Native SSD misses93.06→67.23/tok, waits218.74→163.87ms/tok; GPUhit56.44→61.19%. Natural answer is coherent397tokens rather than prior462; CPU/GPU execution placement changes can perturb greedy text. Same exact request, not identical-output-token causal isolation. Cold repeat and long-context/functional checks still required before finalizing.
 - Outcome=PASS; finish=stop; error=None; RAM=21.26GiB / 24GiB.
+
+### 022-iq1s-parity-repeat — maya — 2026-10-31T00:57:54Z
+
+- Configuration commit: `c8d2fa63e083d2665dc684fda2d68970b96a93a4`; receipt: [results/experiment-022-iq1s-parity-repeat.json](results/experiment-022-iq1s-parity-repeat.json).
+- **Prefill: 990.14 tok/s; generation: 5.15 tok/s.** Prompt=25558, generated=375, cached=0; wall=98.49s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=20.86GiB / 24GiB.

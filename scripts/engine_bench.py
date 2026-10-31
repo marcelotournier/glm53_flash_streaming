@@ -90,6 +90,7 @@ def main():
         assert payload.get('cache_prompt') is False and payload.get('stream') is True
         args.prefill_only = replay['prefill_only']
         needle = replay.get('needle_code')
+        args.needle_test = bool(needle)
         args.prompt_style = 'replay-' + replay['id']
         replay_sha = hashlib.sha256(raw_replay).hexdigest()
     before = get(args.url + '/metrics' if args.engine == 'maya' else args.url + '/stats')
