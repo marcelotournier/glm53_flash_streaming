@@ -179,3 +179,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Configuration commit: `c6c4c69c5677ec26c7615329dba7a8f1c8e55321`; receipt: [results/experiment-019-iq1s-readchunks4.json](results/experiment-019-iq1s-readchunks4.json).
 - **Prefill: 902.09 tok/s; generation: 3.97 tok/s.** Prompt=25558, generated=462, cached=0; wall=144.50s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=18.21GiB / 24GiB.
+
+### 020-iq1s-prefill-readers4 — maya — 2026-10-31T00:49:25Z
+
+- Configuration commit: `e57fd88e0b75d89d048521d0fadb4c9a827f91cd`; receipt: [results/experiment-020-iq1s-prefill-readers4.json](results/experiment-020-iq1s-prefill-readers4.json).
+- **Prefill: 969.17 tok/s; generation: 4.00 tok/s.** Prompt=25558, generated=462, cached=0; wall=141.67s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=18.22GiB / 24GiB.
