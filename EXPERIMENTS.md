@@ -235,3 +235,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Deleted models/aj/ (both87.35GB AJ shards and derived pack); active IQ1_S weights/pack and service untouched. AJ manifest/frozenconfig/image/history retained, but restoration now requires re-download and packing. Receipt: [results/experiment-026-aj-cleanup.json](results/experiment-026-aj-cleanup.json).
 - After Btrfs sync, free space283→365GiB; models/ now88GiB (IQ1_S only). No inference performed: prefill tok/s:N/A; generation tok/s:N/A.
 - Documented next-session IQ3_XXS TODO, **do not start now**. KnownUnsloth~120GB candidate violates unchanged100GB cap; requires verifiedeligiblevariant or explicitcap-change approval before any download/preparation/testing. No IQ3 job started.
+
+### 028-iq3-repo-natural — maya — 2026-10-31T01:58:27Z
+
+- Configuration commit: `25bb355727cfd80ffd188b72cc0a3df2332e4536`; receipt: [results/experiment-028-iq3-repo-natural.json](results/experiment-028-iq3-repo-natural.json).
+- **Prefill: 797.38 tok/s; generation: 3.02 tok/s.** Prompt=25558, generated=439, cached=0; wall=177.17s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=21.52GiB / 24GiB.
