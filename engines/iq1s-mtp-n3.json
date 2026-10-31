@@ -1,0 +1,43 @@
+{
+  "exe": "/app/maya",
+  "args": [
+    "--glm-pack",
+    "/models/maya-pack",
+    "--max-context",
+    "262144",
+    "--expert-cache",
+    "auto",
+    "--vram-reserve-mib",
+    "1200",
+    "--prefill",
+    "32768",
+    "--kv-streaming",
+    "on",
+    "--pool-workers",
+    "6"
+  ],
+  "cwd": "/opt/maya",
+  "log": "/tmp/maya-engine.log",
+  "tokenizer": "/models/maya-pack/tokenizer",
+  "model_name": "glm-5.3-flash",
+  "gpu": [
+    0
+  ],
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95
+  },
+  "reasoning_effort": "low",
+  "env": {
+    "MAYA_GLM_RAM_GB": "15",
+    "MAYA_GLM_CKPT_EVERY": "0",
+    "MAYA_GLM_READ_CHUNKS": "4",
+    "MAYA_GLM_PREFILL_LAND": "78",
+    "MAYA_GLM_DISK_READERS": "4",
+    "MAYA_GLM_MTP_DECODE": "1",
+    "MAYA_GLM_MTP_DRAFT": "3",
+    "MAYA_GLM_MTP_FIXED": "3",
+    "MAYA_GLM_MTP_ADAPT": "0",
+    "MAYA_GLM_MTP_TRACE": "1"
+  }
+}
