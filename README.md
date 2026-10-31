@@ -2,9 +2,15 @@
 
 A Dockerized local model server, reusing **Project Maya** (Strata-derived) and the exact **AJ-IQ2_XXS** quant linked in [this single-3090 recipe](https://x.com/ItsmeAjayKV/status/2111045102529593718).
 
+## Current work: Unsloth IQ1_S parity test
+
+At the user's request, the successful AJ server has been **unloaded**. Its weights, image and exact winning profile are preserved in **[BASELINE.md](BASELINE.md)** and `engines/aj-baseline.json`. The new selected candidate is **Unsloth UD-IQ1_S (93,087,245,088 bytes)**, being downloaded/hash-verified before testing; do not assume AJ's measured speeds apply to it.
+
+`make` defaults to `QUANT=unsloth-iq1s`; use **`make QUANT=aj IMAGE=glm53-maya:aj-baseline recreate`** for the frozen AJ rollback. Both use manifest-bound identity checks and the hard size cap. Exact comparison: `make bench EXPERIMENT=<unique-id> REPLAY_RECEIPT=results/experiment-012-aj-repo-natural.json` after a fresh restart, not a regenerated source corpus. The official Unsloth CLI alternative is assessed in [ENGINES.md](ENGINES.md).
+
 ## Hard constraint: weights must not exceed 100 GB
 
-See **[SPEC.md](SPEC.md)**. The active model is **87,346,006,560 bytes** across two shards, pinned and SHA256-verified via `aj.lock.json`. The downloader, startup and benchmark automation reject manifests above **100,000,000,000 bytes total**, not per shard. Earlier 157 GB IQ4 and 125 GB EXL3 candidates are prohibited and stopped; their reports remain historical only.
+See **[SPEC.md](SPEC.md)**. The known-good AJ model is **87,346,006,560 bytes** across two shards, pinned and SHA256-verified via `aj.lock.json`. The selected IQ1_S comparison is pinned in `unsloth-iq1s.lock.json`. The downloader, startup and benchmark automation reject manifests above **100,000,000,000 bytes total**, not per shard. Earlier 157 GB IQ4 and 125 GB EXL3 candidates are prohibited and stopped; their reports remain historical only.
 
 AJ is a 2.23-bpw hand-mixed quantization, not a full-quality replacement for BF16. All routed experts remain; the unused MTP head is absent. Its model card reports a significant quantization-quality tradeoff. No expert skipping, LoRA, abliteration or runtime pruning is enabled here.
 
@@ -13,7 +19,7 @@ AJ is a 2.23-bpw hand-mixed quantization, not a full-quality replacement for BF1
 Linux, an NVIDIA RTX 3090 24 GiB, rootless Docker with NVIDIA CDI, Python 3, make, curl, and internal NVMe storage are required. This host has a Ryzen 5700G and 27.28 GiB usable RAM. Docker is capped at 24 GiB with container swap disabled. Leave room for ~87 GB weights, a small compatibility pack and the CUDA build/image.
 
 ```sh
-make up                 # download+verify, build pinned Maya, pack once, start and wait
+make up                 # selected QUANT: download+verify, build pinned Maya, pack once, start and wait
 make test EXPERIMENT=validation-001
 make status
 make logs
@@ -54,7 +60,7 @@ See linked JSON receipts and exact configuration Git hashes in [EXPERIMENTS.md](
 ## Settings and experiments
 
 - Engine settings: `engines/maya.json` (context, prefill batch, 12 GiB RAM expert tier, worker count, GPU reserve). Run **`make recreate`** after changing them; existing containers retain their original arguments and file mounts.
-- `make verify`: rehash both allowed weight shards.
+- `make verify`: rehash every selected allowed weight shard.
 - `make pack`: build upstream's required small BF16-compatible tensors and tokenizer. It does **not** duplicate/requantize all experts. A manifest marker makes this idempotent; `make maya-pack-force` refuses to rewrite a running server's pack.
 - `make smoke EXPERIMENT=<unique-id>`: real model, authentication rejection, factual chat, SSE framing, multi-turn state and actual disk-read counters.
 - `make restart-test EXPERIMENT=<unique-id>`: kill the API process, verify Docker recovery, verify explicit stop stays stopped, then start again.

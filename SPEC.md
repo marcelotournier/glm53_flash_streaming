@@ -16,7 +16,11 @@
 
 User imposed this restriction explicitly during implementation. Keep it in force across future sessions and experiments.
 
-## Verified implementation status (2026-10-30)
+## Current task (2026-10-31)
+
+User requests **preserving and unloading the AJ baseline**, then making **Unsloth UD-IQ1_S** match its **961.76 tok/s uncached prefill and4.78 tok/s sustained generation**. Saved exact config, image, weights, hashes and rollback in **BASELINE.md**. AJ is stopped, not a competing GPU workload. Compare with the exact experiment012 request, not changed repo text. IQ1_S remains93,087,245,088bytes; no model above100GB permitted. Investigate official Unsloth CLI as an alternative too; separate source/guide findings from actual local benchmark results.
+
+## Previous verified AJ implementation (2026-10-30, now unloaded)
 
 - Active allowed quant: **AJ-IQ2_XXS, 87,346,006,560 bytes**, pinned and hash-verified. Project Maya/Strata-derived CUDA engine; 32K prefill, periodic 16K checkpoint cuts disabled, 256K configured context.
 - Experiment 012: **25,558 uncached repository-code/doc prompt tokens at 961.76 tok/s**; 375 natural-end output tokens at **4.78 tok/s**.
