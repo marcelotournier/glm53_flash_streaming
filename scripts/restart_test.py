@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import time
 from wait import inspect, wait_ready
+from model_identity import require_model
 
 
 def main():
@@ -22,7 +23,8 @@ def main():
     name = os.getenv('CONTAINER', 'glm53-flash')
     before = inspect()
     assert before['State']['Running']
-    assert before['Config']['Labels'].get('io.local.glm53.quant') == 'AJ-IQ2_XXS', 'Not the allowed AJ container'
+    manifest = require_model(before)
+    quant = before['Config']['Labels']['io.local.glm53.quant']
     assert before['HostConfig']['RestartPolicy']['Name'] == 'unless-stopped'
     # Docker's restart policy only becomes active after 10s of uptime.
     time.sleep(11)
@@ -52,13 +54,13 @@ def main():
     subprocess.run(['docker', 'start', name], check=True)
     wait_ready()
     receipt = {'configuration_commit': commit, 'tested_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-               'restart_count_before': before['RestartCount'],
+               'model_manifest': manifest, 'restart_count_before': before['RestartCount'],
                'restart_count_after': after['RestartCount'], 'policy': 'unless-stopped',
                'running': inspect()['State']['Running'], 'manual_stop_stayed_stopped': True}
     Path('results').mkdir(exist_ok=True)
     path.write_text(json.dumps(receipt, indent=2) + '\n')
     with Path('EXPERIMENTS.md').open('a') as report:
-        report.write(f'\n### {args.id}-restart — AJ Maya lifecycle\n\n- Config `{commit}`; receipt [{path}]({path}).\n'
+        report.write(f'\n### {args.id}-restart — {quant} Maya lifecycle\n\n- Config `{commit}`; receipt [{path}]({path}).\n'
                      '- PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.\n'
                      '- Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).\n')
     print('PASS: Docker crash recovery and explicit stop/start semantics; API ready again')

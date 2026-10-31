@@ -8,6 +8,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import download
 import smoke
+import model_identity
 
 
 class AutomationTests(unittest.TestCase):
@@ -29,6 +30,22 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(download.validate_manifest(json.loads(Path('aj.lock.json').read_text())), 87_346_006_560)
         self.assertEqual(download.validate_manifest(json.loads(Path('unsloth-iq1s.lock.json').read_text())), 93_087_245_088)
         self.assertEqual(download.validate_manifest(json.loads(Path('unsloth-iq1m.lock.json').read_text())), 97_579_344_672)
+
+    def test_frozen_aj_baseline(self):
+        self.assertEqual(download.sha256(Path('engines/aj-baseline.json')),
+                         '2b34c875d977b6ca439e1821decefb42dcee63a720e41918e552f7742e03c57f')
+
+    def test_quant_identity(self):
+        for lock in ('aj.lock.json', 'unsloth-iq1s.lock.json'):
+            manifest = json.loads(Path(lock).read_text())
+            state = {'Config': {'Labels': {
+                'io.local.glm53.quant': manifest['files'][0]['path'].split('/')[0],
+                'io.local.glm53.manifest-sha256': download.sha256(Path(lock))}},
+                'Mounts': [{'Destination': '/models', 'RW': False}]}
+            self.assertEqual(model_identity.require_model(state, lock), manifest)
+            state['Config']['Labels']['io.local.glm53.manifest-sha256'] = 'wrong'
+            with self.assertRaises(AssertionError):
+                model_identity.require_model(state, lock)
 
     def test_patch_integrity(self):
         self.assertEqual(download.sha256(Path('vendor/glm5next-moe-ssd-streaming.patch')),

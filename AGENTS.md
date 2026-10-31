@@ -13,7 +13,9 @@ Implement a local GLM-5.3-Flash Docker server using established NVMe expert-stre
 - AJ server explicitly STOPPED; GPU down to112MiB. Preserve AJ weights/pack/image. **BASELINE.md + engines/aj-baseline.json** freeze exact artifacts, hashes, performance and rollback instructions.
 - Allowed IQ1_S manifest93,087,245,088bytes verified for cap; download into models/unsloth-iq1s (never use larger IQ2_XXS). No AJ inference during tuning.
 - Compare by replaying exact experiment012 request (repo source has changed), natural EOS, cached0, rates separately. Targets961.76 prefill /4.78 sustained gen tok/s;32K probe1047.02, near256K968.03.
-- Next: quant-aware Makefile/labels/checks, download+hash IQ1_S, upstream BF16 pack, cold baseline same settings, bounded tuning using upstream controls if needed. Commit/push settings and results each arm.
+- IQ1_S download running in background, log results/unsloth-iq1s-download.log (PID67053 initially); discover liveprocess rather than assume. Needs~93GB, filesystem125GiB free at start; preserve30GiB+ free, no other downloads.
+- Added QUANT=unsloth-iq1s default / QUANT=aj rollback to frozenconfig, manifest-SHA+quant labels and testidentityguards. Benchmark supports REPLAY_RECEIPT for exact012 request and includes native /metrics +config +memorypeak. Coldrestart forreplays, enforcecached0.
+- Experiment017 planned: IQ1_S same32K/256K/12GiB/noCKPTcuts profile, exact012 replay; target961.76 prefill/4.78 gen. If needed bounded upstream tuning: RAMtier15GiB (under24GiBcap), readchunks4 vs8, CPUlane controls; no expert skipping/pruning/requantization. Next downloadverify/pack/start, baseline then inspect actual bottlenecks. Commit/push each arm.
 
 ## Previous known-good deployment (now unloaded)
 - Active recipe is **Project Maya (Strata-derived) + AJ-IQ2_XXS**, the EXACT quant/engine in user's post: https://x.com/ItsmeAjayKV/status/2111045102529593718 . Confirmed original post + screenshots, not inferred from a search snippet.

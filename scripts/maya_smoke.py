@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 import time
 import urllib.error
-from download import validate_manifest
+from model_identity import require_model
 from smoke import request, io_stats, validate_sse
 from wait import inspect
 
@@ -20,12 +20,10 @@ def main():
     path = Path(f'results/experiment-{args.id}-smoke.json')
     if path.exists():
         raise RuntimeError(f'{path} already exists')
-    manifest = json.loads(Path('aj.lock.json').read_text())
-    validate_manifest(manifest)
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     state = inspect()
     assert state['State']['Running']
-    assert state['Config']['Labels'].get('io.local.glm53.quant') == 'AJ-IQ2_XXS', 'Wrong/obsolete model container'
+    manifest = require_model(state)
     assert state['HostConfig']['RestartPolicy']['Name'] == 'unless-stopped'
     assert any(m['Destination'] == '/models' and not m['RW'] for m in state['Mounts'])
     with request('/health') as response:
@@ -74,7 +72,8 @@ def main():
         'stream': stream, 'multi_turn': turn, 'disk_read_bytes': after['read_bytes'] - before['read_bytes'],
         'phases': [{'name': n, 'timings': t, 'wall_s': w} for n, t, w in rows], 'passed': True}
     path.write_text(json.dumps(receipt, indent=2) + '\n')
-    report = f'\n### {args.id}-smoke — AJ Maya functional checks\n\n- Config `{commit}`; receipt [{path}]({path}).\n'
+    quant = state['Config']['Labels']['io.local.glm53.quant']
+    report = f'\n### {args.id}-smoke — {quant} Maya functional checks\n\n- Config `{commit}`; receipt [{path}]({path}).\n'
     for name, timings, wall in rows:
         pp, tg = timings.get('prompt_per_second'), timings.get('predicted_per_second')
         report += (f'- {name}: prefill={pp if pp is not None else "N/A"} tok/s; '

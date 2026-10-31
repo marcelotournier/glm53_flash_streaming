@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Cross-engine OpenAI SSE benchmark: uncached long prompt, natural-end generation."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -9,11 +10,13 @@ import subprocess
 import time
 import urllib.request
 from download import validate_manifest
+from model_identity import require_model
 
 
 def get(url):
     try:
-        with urllib.request.urlopen(url, timeout=10) as response:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={
+                'Authorization': 'Bearer ' + os.getenv('API_KEY', 'local')}), timeout=10) as response:
             return json.load(response)
     except (OSError, ValueError):
         return None
@@ -29,6 +32,7 @@ def main():
     parser.add_argument('--model-lock', type=Path, default=Path('aj.lock.json'))
     parser.add_argument('--prompt-style', choices=['repeated', 'repo'], default='repeated')
     parser.add_argument('--source-chars', type=int, default=100000)
+    parser.add_argument('--replay-receipt', type=Path, help='Replay an exact prior request for a matched quant comparison')
     parser.add_argument('--prefill-only', action='store_true', help='Natural short factual answer; decode rate is not sustained')
     parser.add_argument('--needle-test', action='store_true', help='Near-256K retrieval check; requires >=250000 prompt tokens')
     args = parser.parse_args()
@@ -43,6 +47,8 @@ def main():
     if subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=no'], text=True).strip():
         raise RuntimeError('Commit and push settings before measuring')
     state = json.loads(subprocess.check_output(['docker', 'inspect', args.container]))[0]
+    if args.engine == 'maya':
+        require_model(state, args.model_lock)
     command = (state['Config'].get('Cmd') or []).copy()
     if '--api-key' in command:
         command[command.index('--api-key') + 1] = '<redacted>'
@@ -74,7 +80,19 @@ def main():
                'temperature': 0, 'seed': 42, 'stream': True,
                'stream_options': {'include_usage': True}, 'cache_prompt': False,
                'chat_template_kwargs': {'enable_thinking': False, 'reasoning_effort': 'low'}}
-    before = get(args.url + '/stats')
+    replay_sha = None
+    if args.replay_receipt:
+        raw_replay = args.replay_receipt.read_bytes()
+        replay = json.loads(raw_replay)
+        payload = replay['request']
+        if any(k in payload for k in ('max_tokens', 'max_completion_tokens', 'max_new_tokens')):
+            raise ValueError('Natural-EOS comparisons must not cap output')
+        assert payload.get('cache_prompt') is False and payload.get('stream') is True
+        args.prefill_only = replay['prefill_only']
+        needle = replay.get('needle_code')
+        args.prompt_style = 'replay-' + replay['id']
+        replay_sha = hashlib.sha256(raw_replay).hexdigest()
+    before = get(args.url + '/metrics' if args.engine == 'maya' else args.url + '/stats')
     started = time.monotonic()
     first = last = None
     text = reasoning = ''
@@ -122,7 +140,7 @@ def main():
     expected = needle.lower() if needle else ('paris' if args.prefill_only else 'rayleigh')
     passed = (error is None and done and finish == 'stop' and prompt_n > 256 and
               gen_n >= (1 if args.prefill_only else 32) and expected in text.lower() and final['State']['Running'] and
-              final['RestartCount'] == state['RestartCount'] and (cached is None or cached == 0) and
+              final['RestartCount'] == state['RestartCount'] and (cached == 0 if args.engine == 'maya' else cached is None or cached == 0) and
               (not args.needle_test or prompt_n >= 250000))
     receipt = {'id': args.id, 'engine': args.engine, 'prompt_style': args.prompt_style,
         'prefill_only': args.prefill_only, 'needle_code': needle, 'configuration_commit': commit,
@@ -131,14 +149,22 @@ def main():
         'container_started_at': state['State']['StartedAt'],
         'model_manifest': model_manifest,
         'environment': [e for e in state['Config']['Env'] if e.startswith(('GLM53_', 'MAYA_', 'STRATA_'))],
+        'replay_receipt': str(args.replay_receipt) if args.replay_receipt else None,
+        'replay_receipt_sha256': replay_sha,
         'request': payload, 'usage': usage, 'native_timings': native_timings, 'finish_reason': finish,
         'content': text, 'reasoning': reasoning, 'done': done, 'elapsed_s': elapsed,
         'ttft_s': first - started if first else None, 'prefill_tok_s': prefill, 'generation_tok_s': decode,
         'metric': 'prompt_tokens/TTFT; (completion_tokens-1)/(last-first text token); natural EOS, no output cap',
         'cache_policy': 'fresh engine recommended, independent nonce, cache_prompt=false; cached counter may be unavailable',
-        'stats_before': before, 'stats_after': get(args.url + '/stats'), 'passed': passed, 'error': error}
+        'stats_before': before, 'stats_after': get(args.url + '/metrics' if args.engine == 'maya' else args.url + '/stats'), 'passed': passed, 'error': error}
     receipt['docker_stats'] = json.loads(subprocess.check_output(['docker', 'stats', '--no-stream',
         '--format', '{{json .}}', args.container], text=True))
+    receipt['labels'] = state['Config']['Labels']
+    if args.engine == 'maya':
+        config_path = next(m['Source'] for m in state['Mounts'] if m['Destination'] == '/config/maya.json')
+        receipt['engine_config'] = json.loads(Path(config_path).read_text())
+        receipt['memory_peak_bytes'] = int(subprocess.check_output(['docker', 'exec', args.container,
+            'sh', '-c', 'read n </sys/fs/cgroup/memory.peak; echo "$n"'], text=True))
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(receipt, indent=2) + '\n')
     pp = f'{prefill:.2f}' if prefill is not None else 'N/A'
