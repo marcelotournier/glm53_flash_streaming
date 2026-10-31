@@ -165,6 +165,12 @@ def main():
         receipt['engine_config'] = json.loads(Path(config_path).read_text())
         receipt['memory_peak_bytes'] = int(subprocess.check_output(['docker', 'exec', args.container,
             'sh', '-c', 'read n </sys/fs/cgroup/memory.peak; echo "$n"'], text=True))
+        receipt['native_log_excerpt'] = subprocess.run(['docker', 'exec', args.container, 'sh', '-c',
+            'grep -E "^glm (prefill|fast|stat|kv):" /tmp/maya-engine.log | tail -65'],
+            capture_output=True, text=True).stdout
+        receipt['memory_stat'] = subprocess.run(['docker', 'exec', args.container, 'sh', '-c',
+            'grep -E "^(anon|file|shmem|inactive_file|active_file) " /sys/fs/cgroup/memory.stat'],
+            capture_output=True, text=True).stdout
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(receipt, indent=2) + '\n')
     pp = f'{prefill:.2f}' if prefill is not None else 'N/A'
