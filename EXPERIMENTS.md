@@ -185,3 +185,11 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Configuration commit: `e57fd88e0b75d89d048521d0fadb4c9a827f91cd`; receipt: [results/experiment-020-iq1s-prefill-readers4.json](results/experiment-020-iq1s-prefill-readers4.json).
 - **Prefill: 969.17 tok/s; generation: 4.00 tok/s.** Prompt=25558, generated=462, cached=0; wall=141.67s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=18.22GiB / 24GiB.
+
+### 021-iq1s-ram15 — maya — 2026-10-31T00:53:09Z
+
+- Configuration commit: `ffbc2aba6d67a808bbac7563157459cf38dce36b`; receipt: [results/experiment-021-iq1s-ram15.json](results/experiment-021-iq1s-ram15.json).
+- **Prefill: 988.78 tok/s; generation: 5.02 tok/s.** Prompt=25558, generated=397, cached=0; wall=104.68s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- **Both saved AJ targets (961.76 prefill/4.78 gen) matched/exceeded on this same-task sample.** Increased expert RAM12→15GiB within unchanged24GiB/no-swap cap;4independentprefillreaders,4readchunks,78landing slots,32Kbatch/256Kctx, noMTP/skip/prune/requantization. Actual idle anon+shmem20.73GiB passed22.5GiB preflight guard; peak21.706GiB, final21.26GiB, noOOM/restarts.
+- Native SSD misses93.06→67.23/tok, waits218.74→163.87ms/tok; GPUhit56.44→61.19%. Natural answer is coherent397tokens rather than prior462; CPU/GPU execution placement changes can perturb greedy text. Same exact request, not identical-output-token causal isolation. Cold repeat and long-context/functional checks still required before finalizing.
+- Outcome=PASS; finish=stop; error=None; RAM=21.26GiB / 24GiB.
