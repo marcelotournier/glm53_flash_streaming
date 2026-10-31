@@ -1,5 +1,7 @@
 # IQ1_S MTP n=2 / n=3
 
+**Recommendation: do not enable MTP on this NVMe-streaming setup.** It is a bad fit here: fixed n=2/n=3 reduced measured generation throughput by approximately 60%/70% versus MTP off, while increasing disk traffic. Keep `MAYA_GLM_NO_MTP=1` in the normal service profile. Reconsider only if hardware/residency or the engine changes, with a fresh matched benchmark; this is not a blanket judgment about MTP on other systems.
+
 User requested benchmarking the already downloaded IQ1_S with two and three MTP drafts. No downloads, pack rewrites, engine builds or expert modifications. Preserved winning `engines/maya.json`; separate profiles `engines/iq1s-mtp-n2.json` and `engines/iq1s-mtp-n3.json` committed/pushed in `5883f56` before testing.
 
 ## Matched cold request results
