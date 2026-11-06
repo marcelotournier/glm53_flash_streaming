@@ -1,5 +1,9 @@
 # GLM-5.3-Flash server specification
 
+## Current user override: 64 GB DDR4 RAM upgrade (2026-11-06)
+
+User authorized cache/settings optimization and repeated tok/s benchmarks. Host now exposes 58.73 GiB usable RAM. IQ1_S uses a separate `engines/iq1s-64gb.json` profile, initially 40 GiB expert cache / 50 GiB container limit with container swap disabled. This supersedes old 24 GiB/no-increase restrictions for this authorized tuning only; preserve the original profile and all model size limits. Other quants retain their previous defaults. See [RAM64_RESULTS.md](RAM64_RESULTS.md) for exact measurements and final settings.
+
 ## Latest: IQ1_S MTP benchmark complete; IQ1_S running, MTP off
 
 User-requested fixed n=2/n=3 draft tests completed (032–034), with fresh MTP-off control. Same exact 25,558-token request/cached0: off **5.19 tok/s**, n2 **2.10**, n3 **1.58**. MTP slower with NVMe streaming. Restored original IQ1_S winning profile; 035 smoke passed. IQ3 preserved but stopped. See [MTP_RESULTS.md](MTP_RESULTS.md). Supersedes running-IQ3 state below.

@@ -295,3 +295,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - SSE repeat (warm): prefill=5.2 tok/s; gen=10.7 tok/s; wall=0.38s (short factual answer, NOT sustained speed).
 - multi-turn state: prefill=6.0 tok/s; gen=5.8 tok/s; wall=3.88s (short factual answer, NOT sustained speed).
 - PASS: auth rejection, model ID, chat, SSE, multi-turn and 30.89 GB real disk reads.
+
+### 036-iq1s-64gb-original — maya — 2026-11-06T18:12:30Z
+
+- Configuration commit: `897190a38103ca63f1789e5973879becfc1d6d35`; receipt: [results/experiment-036-iq1s-64gb-original.json](results/experiment-036-iq1s-64gb-original.json).
+- **Prefill: 988.02 tok/s; generation: 5.11 tok/s.** Prompt=25558, generated=397, cached=0; wall=103.43s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=21.3GiB / 24GiB.

@@ -93,6 +93,7 @@ def main():
         args.needle_test = bool(needle)
         args.prompt_style = 'replay-' + replay['id']
         replay_sha = hashlib.sha256(raw_replay).hexdigest()
+    host_memory_before = Path('/proc/meminfo').read_text()
     before = get(args.url + '/metrics' if args.engine == 'maya' else args.url + '/stats')
     started = time.monotonic()
     first = last = None
@@ -148,6 +149,10 @@ def main():
         'tested_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         'image_id': state['Image'], 'command': command, 'mounts': state['Mounts'],
         'container_started_at': state['State']['StartedAt'],
+        'memory_limit_bytes': state['HostConfig']['Memory'],
+        'memory_swap_limit_bytes': state['HostConfig']['MemorySwap'],
+        'host_memory_before': host_memory_before,
+        'host_memory_after': Path('/proc/meminfo').read_text(),
         'model_manifest': model_manifest,
         'environment': [e for e in state['Config']['Env'] if e.startswith(('GLM53_', 'MAYA_', 'STRATA_'))],
         'replay_receipt': str(args.replay_receipt) if args.replay_receipt else None,
@@ -169,6 +174,8 @@ def main():
         receipt['native_log_excerpt'] = subprocess.run(['docker', 'exec', args.container, 'sh', '-c',
             'grep -E "^glm (prefill|fast|stat|kv):" /tmp/maya-engine.log | tail -65'],
             capture_output=True, text=True).stdout
+        receipt['memory_events'] = subprocess.check_output(['docker', 'exec', args.container,
+            'sh', '-c', 'grep . /sys/fs/cgroup/memory.events /sys/fs/cgroup/memory.swap.current'], text=True)
         receipt['memory_stat'] = subprocess.run(['docker', 'exec', args.container, 'sh', '-c',
             'grep -E "^(anon|file|shmem|inactive_file|active_file) " /sys/fs/cgroup/memory.stat'],
             capture_output=True, text=True).stdout

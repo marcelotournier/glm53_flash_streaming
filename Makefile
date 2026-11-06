@@ -11,7 +11,8 @@ MAYA_CONFIG ?= $(CURDIR)/engines/aj-baseline.json
 else ifeq ($(QUANT),unsloth-iq1s)
 MODEL_FILE := GLM-5.3-Flash-UD-IQ1_S-00001-of-00003.gguf
 QUANT_LABEL := UD-IQ1_S
-MAYA_CONFIG ?= $(CURDIR)/engines/maya.json
+MAYA_CONFIG ?= $(CURDIR)/engines/iq1s-64gb.json
+MAYA_MEMORY ?= 50g
 else ifeq ($(QUANT),unsloth-iq3xxs)
 MODEL_FILE := GLM-5.3-Flash-UD-IQ3_XXS-00001-of-00004.gguf
 QUANT_LABEL := UD-IQ3_XXS

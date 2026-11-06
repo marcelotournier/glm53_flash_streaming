@@ -1,3 +1,4 @@
+MAYA_MEMORY ?= 24g
 MAYA_IMAGE ?= $(IMAGE)
 MAYA_CONTAINER ?= $(CONTAINER)
 MAYA_MODEL_DIR ?= $(MODEL_DIR)
@@ -39,7 +40,7 @@ maya-start: ## Run allowed <=100GB Maya quant, no expert skipping/LoRA/pruning
 	@if docker inspect "$(MAYA_CONTAINER)" >/dev/null 2>&1; then docker start "$(MAYA_CONTAINER)"; else \
 	  docker run -d --name "$(MAYA_CONTAINER)" --restart unless-stopped --init \
 	    --device nvidia.com/gpu=all --security-opt label=disable \
-	    --memory 24g --memory-swap 24g --shm-size 1g \
+	    --memory $(MAYA_MEMORY) --memory-swap $(MAYA_MEMORY) --shm-size 1g \
 	    --log-opt max-size=20m --log-opt max-file=3 -p $(HOST):$(PORT):8080 \
 	    -v "$(MAYA_MODEL_DIR):/models:ro" -v "$(MAYA_CONFIG):/config/maya.json:ro" \
 	    --label io.local.glm53.quant=$(QUANT_LABEL) --label io.local.glm53.max-weight-bytes=$(if $(filter unsloth-iq3xxs,$(QUANT)),121000000000,100000000000) \
