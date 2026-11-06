@@ -320,3 +320,10 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Prefill: 1245.50 tok/s; generation: N/A tok/s.** Prompt=32058, generated=2, cached=0; wall=26.07s. TTFT-based prefill includes first-token overhead; prompt style=replay-011-aj-32k-no-periodic-cuts, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=46.44GiB / 50GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 040-iq1s-64gb-near256k — maya — 2026-11-06T18:29:52Z
+
+- Configuration commit: `d6ca3f584b814c8009fd0e2b178bb92ff9103c2f`; receipt: [results/experiment-040-iq1s-64gb-near256k.json](results/experiment-040-iq1s-64gb-near256k.json).
+- **Prefill: 1124.04 tok/s; generation: 5.17 tok/s.** Prompt=255099, generated=11, cached=0; wall=229.01s. TTFT-based prefill includes first-token overhead; prompt style=replay-015-aj-near256k-retrieval, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=46.51GiB / 50GiB.
+- Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
