@@ -2,20 +2,22 @@
 
 Local Docker server using the existing **Project Maya** (Strata-derived) engine and **Unsloth UD-IQ1_S**, **93.09 GB** of weights. It now matches/exceeds the saved AJ recipe's measured uncached prefill and generation on the matched workloads.
 
-- **Current target, exact settings/weights:** [IQ1S_TARGET.md](IQ1S_TARGET.md).
+- **Current 64 GB RAM profile/results:** [RAM64_RESULTS.md](RAM64_RESULTS.md): 40 GiB expert cache, **9.91–10.23 tok/s generation / ~1265 tok/s uncached prefill** on the matched 25,558-token request.
+- **Historical 32 GB target, exact settings/weights:** [IQ1S_TARGET.md](IQ1S_TARGET.md).
 - **Historical AJ baseline:** [BASELINE.md](BASELINE.md), `engines/aj-baseline.json`. AJ weights/pack were deleted at the user's request; config/manifest/image/results remain, not an instant local rollback.
-- **Next session:** [TODO.md](TODO.md) — investigate IQ3_XXS, **do not start now**. Known Unsloth~120GB variant conflicts with unchanged100GB ceiling.
+- **IQ3 completed:** [IQ3_RESULTS.md](IQ3_RESULTS.md); exact pinned IQ3 manifest has a user-authorized 121 GB exception. IQ3 preserved/stopped; IQ1_S is active.
+- **MTP tests:** [MTP_RESULTS.md](MTP_RESULTS.md); keep MTP off (n2/n3 were slower on the earlier 32 GB setup, not retested after this upgrade).
 - **All experiments, configuration hashes and receipts:** [EXPERIMENTS.md](EXPERIMENTS.md).
 
 ## Hard limit and quality
 
-**Never use a quant above100,000,000,000 bytes summed across all shards.** See [SPEC.md](SPEC.md). Active IQ1_S totals **93,087,245,088 bytes**, pinned in `unsloth-iq1s.lock.json`; all three full-file SHA256s and sizes passed verification. The downloader, pack/startup and benchmark guards enforce the limit. Old oversized IQ4 and incomplete EXL3 weights were deleted at the user's request; their measurements are historical only.
+**Default limit: 100,000,000,000 bytes summed across all shards.** Only the exact pinned IQ3 manifest has an explicit 121 GB exception; see [SPEC.md](SPEC.md). Active IQ1_S totals **93,087,245,088 bytes**, pinned in `unsloth-iq1s.lock.json`; all three full-file SHA256s and sizes passed verification. The downloader, pack/startup and benchmark guards enforce the limit. Old oversized IQ4 and incomplete EXL3 weights were deleted at the user's request; their measurements are historical only.
 
 All routed experts retained, original GGUF expert weights unchanged. No expert skipping, pruning, LoRA, abliteration or cloud fallback. MTP is disabled. Low-bit quantization has a real quality cost; neither quant is claimed equivalent to BF16. CPU/GPU arithmetic placement can change greedy answers between starts.
 
 ## Measured on this host
 
-RTX3090 24GiB, Ryzen5700G,27.28GiB usable RAM, single PCIe3 NVMe. **Same exact25,558-token repository-code/docs request** replayed from experiment012, fresh engine each arm, cached prompt tokens0, temperature0/seed42, natural-end generation without an output cap:
+RTX3090 24GiB, Ryzen5700G, now **58.73 GiB usable RAM** after the 64 GB DDR4 upgrade (previously 27.28 GiB), single PCIe3 NVMe. **Same exact25,558-token repository-code/docs request** replayed from experiment012, fresh engine each arm, cached prompt tokens0, temperature0/seed42, natural-end generation without an output cap:
 
 | Experiment / quant | Expert RAM | Uncached prefill | Generation | Output tokens |
 |---|---:|---:|---:|---:|
@@ -24,6 +26,9 @@ RTX3090 24GiB, Ryzen5700G,27.28GiB usable RAM, single PCIe3 NVMe. **Same exact25
 |020 IQ1_S independent prefill readers|12GiB|969.17 tok/s|4.00 tok/s|462|
 |**021 IQ1_S winning profile**|**15GiB**|**988.78 tok/s**|**5.02 tok/s**|397|
 |**022 IQ1_S cold repeat**|**15GiB**|**990.14 tok/s**|**5.15 tok/s**|375|
+|036 IQ1_S unchanged profile, upgraded host|15GiB|988.02 tok/s|5.11 tok/s|397|
+|**037 IQ1_S 64 GB tuned**|**40GiB**|**1265.74 tok/s**|**10.23 tok/s**|344|
+|**038 IQ1_S 64 GB cold repeat**|**40GiB**|**1265.40 tok/s**|**9.91 tok/s**|301|
 
 Additional exact-request comparisons:
 
@@ -36,13 +41,13 @@ The255K request retrieved the exact audit code buried roughly one-third into the
 
 ## What made IQ1_S fast
 
-Pinned upstream engine, no new inference kernels. Config: **`engines/maya.json`**; winning SHA256 and source/image IDs in IQ1S_TARGET.md.
+Pinned upstream engine, no new inference kernels. Current IQ1_S default: **`engines/iq1s-64gb.json`**, **40 GiB expert RAM / 50 GiB container limit, no container swap**. Original **`engines/maya.json`** remains unchanged for 32 GB hosts; historical hashes/source/image IDs in IQ1S_TARGET.md.
 
 - **32768-token prefill**, **262144 context**, KV streaming on; auto elastic GPU expert cache,1200MiB VRAM reserve.
 - **`MAYA_GLM_CKPT_EVERY=0`**: prevents the API driver splitting a32K prompt into two16K expert sweeps. Whole-turn snapshots remain; periodic mid-prompt resume checkpoints are disabled.
 - **`MAYA_GLM_DISK_READERS=4`**: independent whole-part prefill readers improved copy overlap.
 - **`MAYA_GLM_READ_CHUNKS=4`**, **`MAYA_GLM_PREFILL_LAND=78`**.
-- **15GiB expert RAM tier**, up from12GiB: fewer SSD misses during decode. Container remains **24GiB/no swap**. Largest observed benchmark peak22.75GiB; steady usage about20.9–21.3GiB. Do not increase pinned RAM based only on apparent free filesystem cache.
+- **40 GiB expert RAM tier** after the upgrade, up from15GiB: disk reads fell ~67→23/output token. Original 15 GiB/24 GiB profile is preserved. Keep OS/desktop headroom; host swap is still enabled, although container swap is disabled. See RAM64_RESULTS.md for measured peaks and caveats.
 
 No prefix reuse was used in timed comparisons. Typical chat prefix caching remains available.
 
@@ -51,7 +56,7 @@ No prefix reuse was used in timed comparisons. Typical chat prefix caching remai
 Linux, rootless Docker with NVIDIA CDI, Python3, make, curl and local NVMe. Rootless Docker user service and login linger are already enabled on this host. No sudo, repartitioning, RAID or daemon changes required.
 
 ```sh
-make up                       # selected IQ1_S: verified download, pinned build, pack, start/wait
+make up                       # IQ1_S default now REQUIRES the upgraded 64 GB host
 make status
 make logs
 make test EXPERIMENT=<unique-id>
@@ -60,6 +65,8 @@ make start wait
 make recreate                 # apply changed config/image; does not delete model data
 make verify                   # rehash all selected shards
 ```
+
+For a 32 GB host / original profile: `make MAYA_CONFIG="$PWD/engines/maya.json" MAYA_MEMORY=24g recreate`. Other quants keep their previous 24 GiB default. Memory/config changes require recreation, not just restart.
 
 **`--restart unless-stopped`** handles process crashes; health status alone does not restart a live process. Real auth/chat/SSE/multi-turn/SSD-I/O smoke passed after the255K request; actual API-SIGKILL recovery and manual stop/start semantics passed too (025), alongside nine unit tests. Server left healthy and running.
 
@@ -71,7 +78,7 @@ curl -sS http://127.0.0.1:8000/v1/chat/completions \
   -d '{"model":"glm-5.3-flash","messages":[{"role":"user","content":"Why is the sky blue?"}],"stream":true,"chat_template_kwargs":{"enable_thinking":false}}'
 ```
 
-AJ is no longer locally installed. A future authorized restore requires re-download/hash verification, then stopping IQ1_S before packing and recreating; see BASELINE.md. Do not run a bare AJ recreate against missing weights, and never run both engines on this GPU. Nothing is being restored or downloaded for the next-session TODO.
+AJ is no longer locally installed. A future authorized restore requires re-download/hash verification, then stopping IQ1_S before packing and recreating; see BASELINE.md. Do not run a bare AJ recreate against missing weights, and never run both engines on this GPU. No model downloads or pack changes were needed for the RAM upgrade.
 
 Packing converts only required small tensors/tokenizer for upstream compatibility; it does not requantize the experts. Manifest markers make it idempotent. Repacking a running server is refused. Existing containers retain startup arguments; **recreate** when changing settings, weights or keys.
 
