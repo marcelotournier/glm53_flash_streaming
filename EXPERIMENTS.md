@@ -301,3 +301,9 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - Configuration commit: `897190a38103ca63f1789e5973879becfc1d6d35`; receipt: [results/experiment-036-iq1s-64gb-original.json](results/experiment-036-iq1s-64gb-original.json).
 - **Prefill: 988.02 tok/s; generation: 5.11 tok/s.** Prompt=25558, generated=397, cached=0; wall=103.43s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=21.3GiB / 24GiB.
+
+### 037-iq1s-64gb-ram40 — maya — 2026-11-06T18:17:30Z
+
+- Configuration commit: `afc1a07ff412ffa1e92d820b33de56e4de6fb481`; receipt: [results/experiment-037-iq1s-64gb-ram40.json](results/experiment-037-iq1s-64gb-ram40.json).
+- **Prefill: 1265.74 tok/s; generation: 10.23 tok/s.** Prompt=25558, generated=344, cached=0; wall=53.72s. TTFT-based prefill includes first-token overhead; prompt style=replay-012-aj-repo-natural, natural-end answer.
+- Outcome=PASS; finish=stop; error=None; RAM=46.35GiB / 50GiB.

@@ -12,4 +12,8 @@ Preserve original `engines/maya.json` and MTP profiles. New IQ1_S default `engin
 
 Reproduce original profile on this host: `make MAYA_CONFIG="$PWD/engines/maya.json" MAYA_MEMORY=24g recreate`. Use `make recreate` for the new IQ1_S default. Do not use the new default on a 32 GB host.
 
-Results pending.
+## First tuned result
+
+037: **1265.74 tok/s prefill / 10.23 tok/s generation**, 344 output tokens, cached0. About **2.00x decode / 1.28x prefill** versus today's unchanged-profile control. Native disk reads fell 67.23→22.67 per output token, disk wait 163.05→56.26 ms/token. Native CPU lane remained 8 threads. Auto-sized VRAM slots changed 2268→2184; same auto-cache setting, not identical numerical placement/output tokens.
+
+Peak cgroup memory 49.58 GiB includes ~3.22 GiB inactive file cache; steady unreclaimable anon+shmem ~46.14 GiB. No cgroup max/OOM events or container swap. Host available memory ~6 GiB; host swap usage rose from zero before tuning to ~361 MiB (other host pages, container swap remains zero). Do not increase the tier further: reserve desktop/OS headroom. Repeat and context/function validation pending. No claim of fully resident inference, exhaustive tuning, broad quality equivalence or the reference's 20–25 tok/s.

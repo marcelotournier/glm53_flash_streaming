@@ -42,6 +42,15 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(download.sha256(Path('engines/aj-baseline.json')),
                          '2b34c875d977b6ca439e1821decefb42dcee63a720e41918e552f7742e03c57f')
 
+    def test_iq1s_memory_profiles(self):
+        self.assertEqual(download.sha256(Path('engines/maya.json')),
+                         '52c9ae6ed6bec5a3411509a9a4819031dba638c75e9c54e633169ef58e3aa728')
+        original = json.loads(Path('engines/maya.json').read_text())
+        expanded = json.loads(Path('engines/iq1s-64gb.json').read_text())
+        self.assertEqual(expanded['env']['MAYA_GLM_RAM_GB'], '40')
+        expanded['env']['MAYA_GLM_RAM_GB'] = '15'
+        self.assertEqual(expanded, original)
+
     def test_quant_identity(self):
         for lock in ('aj.lock.json', 'unsloth-iq1s.lock.json'):
             manifest = json.loads(Path(lock).read_text())
