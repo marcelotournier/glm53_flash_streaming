@@ -1,4 +1,7 @@
-# Latest state — IQ1_S running with MTP OFF
+# Latest state — 64 GB DDR4 upgrade validated (2026-11-06)
+User authorized RAM tuning/rebenchmark. Host 58.73 GiB usable; same CPU/GPU/model/image. New IQ1_S Makefile default `engines/iq1s-64gb.json`, RAM40 GiB / container50 GiB, no container swap, MTP OFF. Original `engines/maya.json` unchanged (RAM15); restore with explicit MAYA_CONFIG + MAYA_MEMORY=24g recreate. Other quants keep old profile/24GiB defaults; IQ3 preserved/stopped. 036 unchanged control988.02preff/5.11gen;037 tuned1265.74/10.23;038 cold repeat1265.40/9.91, exact25558/cached0 naturalEOS.03932K1245.50;040255K1124.04 exact retrieval;041unit11 + auth/chat/SSE/multi-turn/real disk immediately after255K + recovery/stop/start ALL PASS. Peaks46.94–49.58GiB<50; no OOM/container swap. Host available~6–8GiB, host swap~1.8GiB in use: do NOT increase tier, reduce if desktop needs room. Normal service healthy/running unless-stopped at loopback8000. See RAM64_RESULTS.md. Supersedes all old 24GiB-cap/default-profile/no-RAM-increase statements below. No MTP retest on upgraded RAM.
+
+# Historical latest state — IQ1_S running with MTP OFF
 User requested IQ1_S MTP n2/n3 benchmarks. 032–034 completed: off5.19tok/s, n2=2.10, n3=1.58 on exact25558-token/cached0 request. Drafts accepted198/348 and242/558. NVMe verification traffic makes MTP slower. Original engines/maya.json untouched; separate fixed profiles committed. Restored IQ1_S MTPoff;035smoke passed; IQ3 preserved/notrunning. See MTP_RESULTS.md. Supersedes older running-IQ3 statements below.
 
 # Historical state — IQ3 completed

@@ -1,5 +1,7 @@
 # Validated Unsloth IQ1_S target / memory
 
+> Historical 32 GB-host profile. After the 64 GB DDR4 upgrade, the default is `engines/iq1s-64gb.json`, 40 GiB expert RAM / 50 GiB container cap, with 9.91–10.23 tok/s generation. See [RAM64_RESULTS.md](RAM64_RESULTS.md). To reproduce this document's original profile, explicitly use `MAYA_CONFIG="$PWD/engines/maya.json" MAYA_MEMORY=24g` when recreating.
+
 User requested matching the saved AJ baseline's prefill and generation. **Achieved on the matched workloads, 2026-10-31.** AJ's historical manifest/config/image/results remain in [BASELINE.md](BASELINE.md); its weights/pack were deleted in026 at the user's request.
 
 ## Exact weights and runtime

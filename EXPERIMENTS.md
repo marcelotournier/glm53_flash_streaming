@@ -327,3 +327,17 @@ Automated entries below are appended by `make bench EXPERIMENT=<id>`.
 - **Prefill: 1124.04 tok/s; generation: 5.17 tok/s.** Prompt=255099, generated=11, cached=0; wall=229.01s. TTFT-based prefill includes first-token overhead; prompt style=replay-015-aj-near256k-retrieval, natural-end answer.
 - Outcome=PASS; finish=stop; error=None; RAM=46.51GiB / 50GiB.
 - Prefill-only probe: factual short answer; gen rate is NOT sustained throughput.
+
+### 041-iq1s-64gb-validation-smoke — UD-IQ1_S Maya functional checks
+
+- Config `b0316648f81d46f5340ed4a6867e9a34abda6bab`; receipt [results/experiment-041-iq1s-64gb-validation-smoke.json](results/experiment-041-iq1s-64gb-validation-smoke.json).
+- factual chat: prefill=9.8 tok/s; gen=11.3 tok/s; wall=2.97s (short factual answer, NOT sustained speed).
+- SSE repeat (warm): prefill=29.8 tok/s; gen=42.5 tok/s; wall=0.09s (short factual answer, NOT sustained speed).
+- multi-turn state: prefill=11.5 tok/s; gen=10.9 tok/s; wall=2.02s (short factual answer, NOT sustained speed).
+- PASS: auth rejection, model ID, chat, SSE, multi-turn and 13.21 GB real disk reads.
+
+### 041-iq1s-64gb-validation-restart — UD-IQ1_S Maya lifecycle
+
+- Config `b0316648f81d46f5340ed4a6867e9a34abda6bab`; receipt [results/experiment-041-iq1s-64gb-validation-restart.json](results/experiment-041-iq1s-64gb-validation-restart.json).
+- PASS: API SIGKILL automatically recovered; explicit stop stayed stopped; explicit start restored readiness.
+- Prefill tok/s: N/A; generation tok/s: N/A (lifecycle-only experiment).

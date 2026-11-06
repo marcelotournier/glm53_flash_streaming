@@ -2,7 +2,7 @@
 
 ## Current user override: 64 GB DDR4 RAM upgrade (2026-11-06)
 
-User authorized cache/settings optimization and repeated tok/s benchmarks. Host now exposes 58.73 GiB usable RAM. IQ1_S uses a separate `engines/iq1s-64gb.json` profile, initially 40 GiB expert cache / 50 GiB container limit with container swap disabled. This supersedes old 24 GiB/no-increase restrictions for this authorized tuning only; preserve the original profile and all model size limits. Other quants retain their previous defaults. See [RAM64_RESULTS.md](RAM64_RESULTS.md) for exact measurements and final settings.
+User authorized cache/settings optimization and repeated tok/s benchmarks. Host now exposes 58.73 GiB usable RAM. IQ1_S uses a separate `engines/iq1s-64gb.json` profile, validated at 40 GiB expert cache / 50 GiB container limit with container swap disabled. Matched cold runs achieved 9.91–10.23 tok/s generation / ~1265 tok/s prefill, vs unchanged-profile control 5.11 / 988.02. 32K/255K context and functional/recovery checks passed (036–041). Host swap remains enabled and in use; do not increase the tier further. This supersedes old 24 GiB/no-increase restrictions for this authorized tuning only; preserve the original profile and all model size limits. Other quants retain their previous defaults. See [RAM64_RESULTS.md](RAM64_RESULTS.md) for exact measurements and final settings.
 
 ## Latest: IQ1_S MTP benchmark complete; IQ1_S running, MTP off
 
